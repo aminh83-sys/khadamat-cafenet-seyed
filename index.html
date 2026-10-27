@@ -29,6 +29,7 @@ footer{text-align:center;color:#68798b;font-size:12px;padding:25px 10px}
 #empty{display:none}
 @media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.2.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 <header>
@@ -110,6 +111,24 @@ footer{text-align:center;color:#68798b;font-size:12px;padding:25px 10px}
   <button type="button" onclick="calculateAge()">محاسبه سن</button>
   <p id="age-result" aria-live="polite" style="margin-top:12px"></p>
 </section>
+  <section class="note" id="image-pdf">
+  <h2>📄 تبدیل عکس به PDF</h2>
+  <p>یک یا چند عکس انتخاب کن و آن‌ها را به فایل PDF تبدیل کن.</p>
+
+  <input
+    type="file"
+    id="imageFiles"
+    accept="image/jpeg,image/png,image/webp"
+    multiple
+    style="display:block;width:100%;margin:15px 0"
+  >
+
+  <button type="button" onclick="convertImagesToPDF()">
+    تبدیل و دریافت فایل PDF
+  </button>
+
+  <p id="pdf-status" aria-live="polite"></p>
+</section>
 </main>
 <footer>کارینو | سامانه مستقل خدمات آنلاین ایران<br>نسخه اولیه آزمایشی</footer>
 <script>
@@ -164,6 +183,90 @@ function calculateAge() {
   result.textContent =
     'سن شما: ' + years + ' سال، ' +
     months + ' ماه و ' + days + ' روز';
+}
+  async function convertImagesToPDF() {
+  const input = document.getElementById('imageFiles');
+  const status = document.getElementById('pdf-status');
+
+  if (!input.files.length) {
+    status.textContent = 'لطفاً ابتدا عکس انتخاب کن.';
+    return;
+  }
+
+  if (!window.jspdf) {
+    status.textContent =
+      'کتابخانه PDF بارگذاری نشده است. اینترنت را بررسی و صفحه را تازه‌سازی کن.';
+    return;
+  }
+
+  const button = document.querySelector(
+    '#image-pdf button'
+  );
+
+  button.disabled = true;
+  status.textContent = 'در حال ساخت فایل PDF...';
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const files = Array.from(input.files);
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      if (!file.type.startsWith('image/')) continue;
+
+      const data = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const image = await new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = data;
+      });
+
+      if (i > 0) pdf.addPage();
+
+      const pageWidth = 190;
+      const pageHeight = 277;
+      const scale = Math.min(
+        pageWidth / image.width,
+        pageHeight / image.height
+      );
+
+      const width = image.width * scale;
+      const height = image.height * scale;
+      const x = (210 - width) / 2;
+      const y = (297 - height) / 2;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = image.width;
+      canvas.height = image.height;
+      canvas.getContext('2d').drawImage(image, 0, 0);
+
+      pdf.addImage(
+        canvas.toDataURL('image/jpeg', 0.92),
+        'JPEG',
+        x,
+        y,
+        width,
+        height
+      );
+    }
+
+    pdf.save('karino-images.pdf');
+    status.textContent = 'فایل PDF آماده شد.';
+  } catch (error) {
+    status.textContent =
+      'تبدیل انجام نشد. عکس دیگری امتحان کن.';
+  } finally {
+    button.disabled = false;
+  }
 }
 </script>
 </body>
