@@ -326,6 +326,51 @@ document.getElementById('empty').style.display=count?'none':'block';
 }
 document.getElementById('q').addEventListener('input',searchServices);
 
+function searchKarino() {
+  const input = document.getElementById('q');
+  const query = input.value.trim().toLocaleLowerCase('fa-IR');
+
+  const searchableItems = [
+    ...document.querySelectorAll('#services .card'),
+    ...document.querySelectorAll('#age-tool, #image-pdf, #compress-tool')
+  ];
+
+  let visibleCount = 0;
+
+  searchableItems.forEach(item => {
+    const text = (
+      item.innerText + ' ' +
+      (item.getAttribute('data-keywords') || '')
+      <section class="note" id="age-tool"
+  data-keywords="سن تاریخ تولد سن یاب محاسبه سن">
+    <section class="note" id="image-pdf"
+  data-keywords="عکس تصویر pdf پی دی اف تبدیل عکس مدارک">
+    <section class="note" id="compress-tool"
+  data-keywords="کاهش حجم عکس فشرده سازی کم کردن حجم تصویر">
+    ).toLocaleLowerCase('fa-IR');
+
+    const match = !query || text.includes(query);
+
+    item.hidden = !match;
+
+    if (match) visibleCount++;
+  });
+
+  const empty = document.getElementById('empty');
+
+  if (empty) {
+    empty.hidden = visibleCount > 0;
+    empty.textContent = 'موردی پیدا نشد؛ عبارت دیگری را جست‌وجو کن.';
+  }
+}
+
+const karinoSearchInput = document.getElementById('q');
+
+if (karinoSearchInput) {
+  karinoSearchInput.removeEventListener('input', searchKarino);
+  karinoSearchInput.addEventListener('input', searchKarino);
+}
+
 function calculateAge() {
   const field = document.getElementById('birthdate');
   const result = document.getElementById('age-result');
