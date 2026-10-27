@@ -100,6 +100,16 @@ footer{text-align:center;color:#68798b;font-size:12px;padding:25px 10px}
 <h2>🏪 آگهی و کسب‌وکار</h2>
 <p>امکان معرفی کسب‌وکارها در آینده اضافه خواهد شد.</p>
 </section>
+  
+<section class="note" id="age-tool">
+  <h2>🎂 محاسبه‌گر سن</h2>
+  <p>تاریخ تولدت را انتخاب کن تا سنت محاسبه شود.</p>
+  <label for="birthdate">تاریخ تولد:</label>
+  <input id="birthdate" type="date"
+    style="display:block;width:100%;margin:12px 0;padding:12px;border:1px solid #ddd;border-radius:10px">
+  <button type="button" onclick="calculateAge()">محاسبه سن</button>
+  <p id="age-result" aria-live="polite" style="margin-top:12px"></p>
+</section>
 </main>
 <footer>کارینو | سامانه مستقل خدمات آنلاین ایران<br>نسخه اولیه آزمایشی</footer>
 <script>
@@ -115,6 +125,46 @@ if(show)count++;
 document.getElementById('empty').style.display=count?'none':'block';
 }
 document.getElementById('q').addEventListener('input',searchServices);
+
+function calculateAge() {
+  const field = document.getElementById('birthdate');
+  const result = document.getElementById('age-result');
+
+  if (!field.value) {
+    result.textContent = 'لطفاً تاریخ تولد را انتخاب کن.';
+    return;
+  }
+
+  const birth = new Date(field.value + 'T00:00:00');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (birth > today) {
+    result.textContent = 'تاریخ تولد نمی‌تواند در آینده باشد.';
+    return;
+  }
+
+  let years = today.getFullYear() - birth.getFullYear();
+  let months = today.getMonth() - birth.getMonth();
+  let days = today.getDate() - birth.getDate();
+
+  if (days < 0) {
+    months--;
+    const previousMonthDays = new Date(
+      today.getFullYear(), today.getMonth(), 0
+    ).getDate();
+    days += previousMonthDays;
+  }
+
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  result.textContent =
+    'سن شما: ' + years + ' سال، ' +
+    months + ' ماه و ' + days + ' روز';
+}
 </script>
 </body>
 </html>
