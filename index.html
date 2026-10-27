@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#123b68">
+<title>کارینو | همه خدمات، یک‌جا</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f3f6fb;color:#18304b;line-height:1.9}
+.wrap{width:min(100% - 28px,900px);margin:auto}
+header{background:#123b68;color:white;padding:22px 0 30px;border-radius:0 0 25px 25px}
+.brand{font-size:30px;font-weight:bold}
+.hero{padding-top:20px}
+h1{font-size:28px;line-height:1.8}
+.search{display:flex;gap:8px;background:white;padding:6px;border-radius:12px}
+input{flex:1;min-width:0;padding:12px;border:0;font:inherit;outline:none}
+button{background:#087e8b;color:white;border:0;border-radius:9px;padding:10px 15px;font:inherit}
+h2{font-size:20px;margin-top:25px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{display:block;background:white;border:1px solid #e0e8f1;border-radius:15px;padding:16px 12px;text-decoration:none;color:inherit}
+.emoji{font-size:27px}
+.card h3{font-size:15px;margin:3px 0}
+.card p,.note p{font-size:12px;color:#65778a;margin:0}
+.note{background:white;padding:16px;border-radius:14px;margin-top:18px}
+.note a{color:#087e8b}
+footer{text-align:center;color:#68798b;font-size:12px;padding:25px 10px}
+#empty{display:none}
+@media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header>
+<div class="wrap">
+<div class="brand">🌐 کارینو</div>
+<div>همه خدمات، یک‌جا</div>
+<div class="hero">
+<h1>کارهای اینترنتی‌ات را آسان‌تر انجام بده!</h1>
+<p>ثبت‌نام‌ها، آزمون‌ها و ابزارهای کاربردی در یک جا.</p>
+<div class="search">
+<input id="q" placeholder="جست‌وجوی خدمات..." aria-label="جست‌وجو">
+<button onclick="searchServices()">جست‌وجو</button>
+</div>
+</div>
+</div>
+</header>
+<main class="wrap">
+<h2>خدمات کارینو</h2>
+<div class="grid" id="services">
+<a class="card" data-key="دانشگاه کنکور دانشجو انتخاب رشته" href="#university">
+<div class="emoji">🎓</div><h3>دانشگاه و کنکور</h3><p>ثبت‌نام، انتخاب رشته و نتایج</p>
+</a>
+<a class="card" data-key="استخدام شغل آزمون کاریابی" href="#jobs">
+<div class="emoji">💼</div><h3>استخدام و آزمون‌ها</h3><p>فرصت‌ها و مهلت‌های ثبت‌نام</p>
+</a>
+<a class="card" data-key="اطلاعیه نتایج تمدید کارت آزمون" href="#news">
+<div class="emoji">📢</div><h3>اطلاعیه‌ها و نتایج</h3><p>خبرهای مهم و مهلت‌ها</p>
+</a>
+<a class="card" data-key="ابزار رایگان pdf عکس فایل" href="#tools">
+<div class="emoji">📄</div><h3>ابزارهای رایگان</h3><p>ابزارهای کاربردی اینترنتی</p>
+</a>
+<a class="card" data-key="درخواست خدمات سفارش" href="#request">
+<div class="emoji">📝</div><h3>درخواست خدمات</h3><p>راهنمایی و سفارش خدمات</p>
+</a>
+<a class="card" data-key="آگهی کسب و کار تبلیغات" href="#ads">
+<div class="emoji">🏪</div><h3>آگهی و کسب‌وکار</h3><p>معرفی خدمات و مشاغل</p>
+</a>
+</div>
+<p id="empty">موردی پیدا نشد.</p>
+
+<section class="note" id="university">
+<h2>🎓 دانشگاه و کنکور</h2>
+<p>برای اطلاع از ثبت‌نام‌ها و نتایج، منابع رسمی را بررسی کن.</p>
+<p><a href="https://www.sanjesh.org/" target="_blank" rel="noopener">ورود به سازمان سنجش</a></p>
+<p><a href="https://azmoon.org/" target="_blank" rel="noopener">سامانه آزمون دانشگاه آزاد</a></p>
+</section>
+
+<section class="note" id="jobs">
+<h2>💼 استخدام و آزمون‌ها</h2>
+<p>فهرست فرصت‌های استخدامی در مراحل بعد به این بخش اضافه می‌شود.</p>
+</section>
+
+<section class="note" id="news">
+<h2>📢 اطلاعیه‌ها و نتایج</h2>
+<p>اطلاعیه‌های بررسی‌شده در نسخه‌های بعدی منتشر خواهند شد.</p>
+</section>
+
+<section class="note" id="tools">
+<h2>📄 ابزارهای رایگان</h2>
+<p>ابزار تبدیل عکس به PDF و سایر امکانات در مرحله بعد اضافه می‌شوند.</p>
+</section>
+
+<section class="note" id="request">
+<h2>📝 درخواست خدمات</h2>
+<p>بخش ثبت درخواست هنوز فعال نیست. فعلاً اطلاعات شخصی و مدارک محرمانه را ارسال نکن.</p>
+</section>
+
+<section class="note" id="ads">
+<h2>🏪 آگهی و کسب‌وکار</h2>
+<p>امکان معرفی کسب‌وکارها در آینده اضافه خواهد شد.</p>
+</section>
+</main>
+<footer>کارینو | سامانه مستقل خدمات آنلاین ایران<br>نسخه اولیه آزمایشی</footer>
+<script>
+function searchServices(){
+const q=document.getElementById('q').value.trim().toLowerCase();
+let count=0;
+document.querySelectorAll('#services .card').forEach(card=>{
+const text=(card.innerText+' '+card.dataset.key).toLowerCase();
+const show=text.includes(q);
+card.style.display=show?'block':'none';
+if(show)count++;
+});
+document.getElementById('empty').style.display=count?'none':'block';
+}
+document.getElementById('q').addEventListener('input',searchServices);
+</script>
+</body>
+</html>
