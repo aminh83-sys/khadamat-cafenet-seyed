@@ -221,39 +221,53 @@
         .replace(/[٠-٩]/g, digit => "٠١٢٣٤٥٦٧٨٩".indexOf(digit));
     }
 
-    function searchKarino() {
-      const input = document.getElementById("q");
-      const empty = document.getElementById("empty");
+    
+function normalizeSearchText(value) {
+  return String(value || "")
+    .toLocaleLowerCase("fa-IR")
+    .replace(/ي/g, "ی")
+    .replace(/ى/g, "ی")
+    .replace(/ك/g, "ک")
+    .replace(/\u200c/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
-      if (!input || !empty) return;
+function searchKarino() {
+  const input = document.getElementById("q");
+  const empty = document.getElementById("empty");
+  if (!input || !empty) return;
 
-      const query = normalizeSearchText(input.value);
+  const query = normalizeSearchText(input.value);
+  const items = document.querySelectorAll(
+    "#services .card, #free-tools .tool, #announcements .card"
+  );
 
-      const items = document.querySelectorAll(
-        "#services .card, #free-tools .tool, #announcements .card"
-      );
+  let count = 0;
 
-      let visibleCount = 0;
+  items.forEach(item => {
+    const keywords = item.getAttribute("data-keywords") || "";
+    const content = normalizeSearchText(
+      (item.innerText || "") + " " + keywords
+    );
 
-      items.forEach(item => {
-        const text = normalizeSearchText(
-          (item.innerText || "") + " " +
-          (item.getAttribute("data-keywords") || "")
-        );
+    const match = query === "" || content.includes(query);
 
-        const matches = query === "" || text.includes(query);
+    item.hidden = !match;
+    item.style.display = match ? "" : "none";
 
-        item.hidden = !matches;
+    if (match) count++;
+  });
 
-        // اگر قبلاً با CSS مخفی شده بود، نتیجه جست‌وجو را هم اعمال کن.
-  
-        if (matches) visibleCount++;
-      });
+  empty.hidden = count > 0;
+}
 
-      empty.hidden = visibleCount > 0;
-    }
+const karinoSearchInput = document.getElementById("q");
+if (karinoSearchInput) {
+  karinoSearchInput.addEventListener("input", searchKarino);
+  searchKarino();
+}
 
-    document.getElementById("q").addEventListener("input", searchKarino);
     // محاسبه سن بر اساس تاریخ میلادی انتخاب‌شده
     document.getElementById('age-button').addEventListener('click', () => {
       const field = document.getElementById('birthdate');
