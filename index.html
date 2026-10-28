@@ -437,6 +437,47 @@ if (karinoSearchInput) {
         button.disabled = false;
       }
     });
+    
+    // اصلاح نهایی جست‌وجوی کارینو
+    const finalKarinoSearch = document.getElementById("q");
+
+    if (finalKarinoSearch) {
+      finalKarinoSearch.addEventListener("input", function () {
+        const normalize = value => String(value || "")
+          .toLocaleLowerCase("fa-IR")
+          .replace(/ي/g, "ی")
+          .replace(/ك/g, "ک")
+          .replace(/\u200c/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+
+        const query = normalize(this.value);
+        const items = document.querySelectorAll(
+          "#services .card, #free-tools .tool, #announcements .card"
+        );
+
+        let found = 0;
+
+        items.forEach(item => {
+          const content = normalize(
+            (item.innerText || "") + " " +
+            (item.getAttribute("data-keywords") || "")
+          );
+
+          const matches = !query || content.includes(query);
+
+          item.hidden = !matches;
+          item.style.display = matches ? "" : "none";
+
+          if (matches) found++;
+        });
+
+        const emptyMessage = document.getElementById("empty");
+        if (emptyMessage) {
+          emptyMessage.hidden = found > 0;
+        }
+      });
+    }
   </script>
 </body>
 </html>
