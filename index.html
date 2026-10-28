@@ -209,7 +209,8 @@
 
   <script>
 
-    // جست‌وجوی یکپارچه در خدمات، ابزارها و اطلاعیه‌ها
+   
+    // جست‌وجوی یکپارچه کارینو
     function normalizeSearchText(value) {
       return String(value || "")
         .toLocaleLowerCase("fa-IR")
@@ -217,56 +218,47 @@
         .replace(/ى/g, "ی")
         .replace(/ك/g, "ک")
         .replace(/\u200c/g, " ")
-        .replace(/[۰-۹]/g, digit => "۰۱۲۳۴۵۶۷۸۹".indexOf(digit))
-        .replace(/[٠-٩]/g, digit => "٠١٢٣٤٥٦٧٨٩".indexOf(digit));
+        .replace(/\s+/g, " ")
+        .trim();
     }
 
-    
-function normalizeSearchText(value) {
-  return String(value || "")
-    .toLocaleLowerCase("fa-IR")
-    .replace(/ي/g, "ی")
-    .replace(/ى/g, "ی")
-    .replace(/ك/g, "ک")
-    .replace(/\u200c/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
+    function searchKarino() {
+      const input = document.getElementById("q");
+      const empty = document.getElementById("empty");
 
-function searchKarino() {
-  const input = document.getElementById("q");
-  const empty = document.getElementById("empty");
-  if (!input || !empty) return;
+      if (!input || !empty) return;
 
-  const query = normalizeSearchText(input.value);
-  const items = document.querySelectorAll(
-    "#services .card, #free-tools .tool, #announcements .card"
-  );
+      const query = normalizeSearchText(input.value);
 
-  let count = 0;
+      const items = document.querySelectorAll(
+        "#services .card, #free-tools .tool, #announcements .card"
+      );
 
-  items.forEach(item => {
-    const keywords = item.getAttribute("data-keywords") || "";
-    const content = normalizeSearchText(
-      (item.innerText || "") + " " + keywords
-    );
+      let visibleCount = 0;
 
-    const match = query === "" || content.includes(query);
+      items.forEach(item => {
+        const content = normalizeSearchText(
+          (item.innerText || "") + " " +
+          (item.getAttribute("data-keywords") || "")
+        );
 
-    item.hidden = !match;
-    item.style.display = match ? "" : "none";
+        const matches = query === "" || content.includes(query);
 
-    if (match) count++;
-  });
+        item.hidden = !matches;
+        item.style.display = matches ? "" : "none";
 
-  empty.hidden = count > 0;
-}
+        if (matches) visibleCount++;
+      });
 
-const karinoSearchInput = document.getElementById("q");
-if (karinoSearchInput) {
-  karinoSearchInput.addEventListener("input", searchKarino);
-  searchKarino();
-}
+      empty.hidden = visibleCount > 0;
+    }
+
+    const karinoSearchInput = document.getElementById("q");
+
+    if (karinoSearchInput) {
+      karinoSearchInput.addEventListener("input", searchKarino);
+      searchKarino();
+    }
 
     // محاسبه سن بر اساس تاریخ میلادی انتخاب‌شده
     document.getElementById('age-button').addEventListener('click', () => {
