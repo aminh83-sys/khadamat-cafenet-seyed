@@ -210,6 +210,41 @@
   <script>
     // جست‌وجوی هم‌زمان در کارت‌های خدمات و ابزارهای صفحه
     function searchKarino() {
+      const searchInput = document.getElementById("q");
+
+if (searchInput) {
+  searchInput.addEventListener("input", function () {
+    const query = this.value
+      .trim()
+      .toLocaleLowerCase("fa-IR");
+
+    const searchableItems = document.querySelectorAll(
+      "#services .card, #free-tools .tool, #announcements .card"
+    );
+
+    searchableItems.forEach(function (item) {
+      const text = (
+        item.innerText + " " +
+        (item.getAttribute("data-keywords") || "")
+      ).toLocaleLowerCase("fa-IR");
+
+      const normalizedText = text
+        .replace(/ي/g, "ی")
+        .replace(/ك/g, "ک")
+        .replace(/\u200c/g, " ");
+
+      const normalizedQuery = query
+        .replace(/ي/g, "ی")
+        .replace(/ك/g, "ک")
+        .replace(/\u200c/g, " ");
+
+      item.style.display =
+        !normalizedQuery || normalizedText.includes(normalizedQuery)
+          ? ""
+          : "none";
+    });
+  });
+}
       const input = document.getElementById('q');
       const query = (input.value || '').trim().toLocaleLowerCase('fa-IR');
       const items = [
