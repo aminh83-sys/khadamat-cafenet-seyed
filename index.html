@@ -208,67 +208,52 @@
   </footer>
 
   <script>
-    // جست‌وجوی هم‌زمان در کارت‌های خدمات و ابزارهای صفحه
+
+    // جست‌وجوی یکپارچه در خدمات، ابزارها و اطلاعیه‌ها
+    function normalizeSearchText(value) {
+      return String(value || "")
+        .toLocaleLowerCase("fa-IR")
+        .replace(/ي/g, "ی")
+        .replace(/ى/g, "ی")
+        .replace(/ك/g, "ک")
+        .replace(/\u200c/g, " ")
+        .replace(/[۰-۹]/g, digit => "۰۱۲۳۴۵۶۷۸۹".indexOf(digit))
+        .replace(/[٠-٩]/g, digit => "٠١٢٣٤٥٦٧٨٩".indexOf(digit));
+    }
+
     function searchKarino() {
-      const searchInput = document.getElementById("q");
+      const input = document.getElementById("q");
+      const empty = document.getElementById("empty");
 
-if (searchInput) {
-  searchInput.addEventListener("input", function () {
-    const query = this.value
-      .trim()
-      .toLocaleLowerCase("fa-IR");
+      if (!input || !empty) return;
 
-    const searchableItems = document.querySelectorAll(
-      "#services .card, #free-tools .tool, #announcements .card"
-    );
+      const query = normalizeSearchText(input.value);
 
-    searchableItems.forEach(function (item) {
-      const text = (
-        item.innerText + " " +
-        (item.getAttribute("data-keywords") || "")
-      ).toLocaleLowerCase("fa-IR");
+      const items = document.querySelectorAll(
+        "#services .card, #free-tools .tool, #announcements .card"
+      );
 
-      const normalizedText = text
-        .replace(/ي/g, "ی")
-        .replace(/ك/g, "ک")
-        .replace(/\u200c/g, " ");
-
-      const normalizedQuery = query
-        .replace(/ي/g, "ی")
-        .replace(/ك/g, "ک")
-        .replace(/\u200c/g, " ");
-
-      item.style.display =
-        !normalizedQuery || normalizedText.includes(normalizedQuery)
-          ? ""
-          : "none";
-    });
-  });
-}
-      const input = document.getElementById('q');
-      const query = (input.value || '').trim().toLocaleLowerCase('fa-IR');
-      const items = [
-        ...document.querySelectorAll('#services .card'),
-        ...document.querySelectorAll('#free-tools .tool')
-      ];
       let visibleCount = 0;
 
       items.forEach(item => {
-        const text = (
-          (item.innerText || '') + ' ' +
-          (item.getAttribute('data-keywords') || '')
-        ).toLocaleLowerCase('fa-IR');
-        const match = !query || text.includes(query);
-        item.hidden = !match;
-        if (match) visibleCount++;
+        const text = normalizeSearchText(
+          (item.innerText || "") + " " +
+          (item.getAttribute("data-keywords") || "")
+        );
+
+        const matches = query === "" || text.includes(query);
+
+        item.hidden = !matches;
+
+        // اگر قبلاً با CSS مخفی شده بود، نتیجه جست‌وجو را هم اعمال کن.
+  
+        if (matches) visibleCount++;
       });
 
-      const empty = document.getElementById('empty');
       empty.hidden = visibleCount > 0;
     }
 
-    document.getElementById('q').addEventListener('input', searchKarino);
-
+    document.getElementById("q").addEventListener("input", searchKarino);
     // محاسبه سن بر اساس تاریخ میلادی انتخاب‌شده
     document.getElementById('age-button').addEventListener('click', () => {
       const field = document.getElementById('birthdate');
