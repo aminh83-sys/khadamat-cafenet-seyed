@@ -1,580 +1,392 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#123b68">
-<title>کارینو | همه خدمات، یک‌جا</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f3f6fb;color:#18304b;line-height:1.9}
-.wrap{width:min(100% - 28px,900px);margin:auto}
-header{background:#123b68;color:white;padding:22px 0 30px;border-radius:0 0 25px 25px}
-.brand{font-size:30px;font-weight:bold}
-.hero{padding-top:20px}
-h1{font-size:28px;line-height:1.8}
-.search{display:flex;gap:8px;background:white;padding:6px;border-radius:12px}
-input{flex:1;min-width:0;padding:12px;border:0;font:inherit;outline:none}
-button{background:#087e8b;color:white;border:0;border-radius:9px;padding:10px 15px;font:inherit}
-h2{font-size:20px;margin-top:25px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.card{display:block;background:white;border:1px solid #e0e8f1;border-radius:15px;padding:16px 12px;text-decoration:none;color:inherit}
-.emoji{font-size:27px}
-.card h3{font-size:15px;margin:3px 0}
-.card p,.note p{font-size:12px;color:#65778a;margin:0}
-.note{background:white;padding:16px;border-radius:14px;margin-top:18px}
-.note a{color:#087e8b}
-footer{text-align:center;color:#68798b;font-size:12px;padding:25px 10px}
-#empty{display:none}
-@media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-</style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.2.1/jspdf.umd.min.js"></script>
-  
-<style>
-  /* طراحی حرفه‌ای کارینو */
-  :root {
-    --karino-blue: #155eef;
-    --karino-dark: #12315a;
-    --karino-bg: #f4f7fc;
-    --karino-border: #e2e8f0;
-  }
-
-  html {
-    scroll-behavior: smooth;
-  }
-
-  body {
-    background: var(--karino-bg);
-    color: #172b4d;
-    line-height: 1.9;
-  }
-
-  header {
-    background: linear-gradient(135deg, #12315a, #155eef);
-    color: white;
-    padding: 30px 18px;
-    border-radius: 0 0 24px 24px;
-    box-shadow: 0 8px 24px rgba(18, 49, 90, .15);
-  }
-
-  header h1 {
-    font-size: clamp(28px, 5vw, 42px);
-    margin-bottom: 5px;
-  }
-
-  main {
-    width: min(1100px, 94%);
-    margin: 25px auto;
-  }
-
-  #services {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 18px;
-  }
-
-  .card,
-  .note {
-    background: white;
-    border: 1px solid var(--karino-border);
-    border-radius: 18px;
-    padding: 22px;
-    box-shadow: 0 5px 18px rgba(20, 40, 80, .05);
-    transition: transform .2s ease, box-shadow .2s ease;
-  }
-
-  .card:hover,
-  .note:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 26px rgba(20, 40, 80, .10);
-  }
-
-  h2 {
-    color: var(--karino-dark);
-  }
-
-  button,
-  .card a {
-    transition: background .2s ease;
-  }
-
-  button {
-    background: var(--karino-blue);
-    color: white;
-    border: 0;
-    border-radius: 12px;
-    padding: 11px 18px;
-    cursor: pointer;
-    font: inherit;
-    font-weight: bold;
-  }
-
-  button:hover {
-    background: #1248bd;
-  }
-
-  button:disabled {
-    opacity: .6;
-    cursor: not-allowed;
-  }
-
-  input,
-  select,
-  textarea {
-    max-width: 100%;
-    box-sizing: border-box;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-    font: inherit;
-  }
-
-  input:focus,
-  select:focus,
-  textarea:focus {
-    outline: 2px solid #93b4ff;
-    outline-offset: 2px;
-  }
-
-  a {
-    color: var(--karino-blue);
-  }
-
-  footer {
-    text-align: center;
-    padding: 25px 15px;
-    color: #64748b;
-  }
-
-  @media (max-width: 600px) {
-    main {
-      width: 92%;
-      margin: 16px auto;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#155eef">
+  <meta name="description" content="کارینو؛ ابزارهای رایگان و خدمات اینترنتی، همه در یک‌جا">
+  <title>کارینو | همه خدمات، یک‌جا</title>
+  <style>
+    :root {
+      --blue:#155eef; --navy:#12315a; --bg:#f4f7fc; --ink:#172b4d;
+      --muted:#64748b; --line:#e2e8f0; --white:#fff; --green:#087443;
     }
-
-    #services {
-      grid-template-columns: 1fr;
-      gap: 12px;
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      margin:0; background:var(--bg); color:var(--ink);
+      font-family:Tahoma, Arial, sans-serif; line-height:1.9;
     }
-
-    .card,
-    .note {
-      padding: 17px;
-      border-radius: 15px;
-    }
-
+    a { color:var(--blue); }
+    button, input, select { font:inherit; }
     button {
-      max-width: 100%;
+      background:var(--blue); color:#fff; border:0; border-radius:11px;
+      padding:10px 16px; cursor:pointer; font-weight:bold;
     }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
+    button:hover { background:#1248bd; }
+    button:disabled { opacity:.6; cursor:not-allowed; }
+    input, select {
+      width:100%; max-width:100%; padding:11px 12px; border:1px solid #cbd5e1;
+      border-radius:10px; background:#fff; color:var(--ink);
     }
-
-    *,
-    *::before,
-    *::after {
-      transition: none !important;
+    input:focus, select:focus, button:focus-visible, a:focus-visible {
+      outline:2px solid #93b4ff; outline-offset:2px;
     }
-  }
-</style>
+    .hero {
+      padding:32px 18px 28px; color:white;
+      background:linear-gradient(135deg,#12315a,#155eef);
+      border-radius:0 0 26px 26px; box-shadow:0 8px 24px #12315a20;
+    }
+    .hero-inner, main, footer { width:min(1100px,92%); margin-inline:auto; }
+    .brand { font-size:clamp(30px,5vw,44px); font-weight:800; margin:0; }
+    .tagline { margin:2px 0 18px; color:#e6efff; }
+    .search-wrap { max-width:650px; }
+    .search-wrap input { padding:14px 16px; border:0; box-shadow:0 4px 14px #001c4d20; }
+    .hero-hint { font-size:13px; color:#e6efff; margin:8px 2px 0; }
+    main { padding:24px 0 40px; }
+    .section-heading { margin:24px 0 12px; color:var(--navy); font-size:22px; }
+    .service-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:15px; }
+    .card, .tool {
+      background:var(--white); border:1px solid var(--line); border-radius:17px;
+      padding:19px; box-shadow:0 5px 18px #1428500b;
+    }
+    .card { transition:transform .2s ease,box-shadow .2s ease; }
+    .card:hover, .tool:hover { box-shadow:0 10px 26px #14285016; }
+    .card:hover { transform:translateY(-2px); }
+    .icon { font-size:27px; }
+    .card h3, .tool h3 { margin:5px 0 6px; color:var(--navy); }
+    .card p, .tool p { margin:4px 0 12px; color:#52627a; }
+    .card a { display:inline-block; margin:4px 8px 0 0; font-weight:bold; }
+    .tools-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:15px; }
+    .tool { scroll-margin-top:15px; }
+    .tool[hidden], .card[hidden] { display:none !important; }
+    .tool label { display:block; margin:12px 0 5px; font-weight:bold; }
+    .tool button { margin-top:12px; }
+    .status { font-size:14px; overflow-wrap:anywhere; }
+    .download-link { display:inline-block; margin-top:10px; font-weight:bold; }
+    .small { color:var(--muted); font-size:13px; }
+    .notice { padding:14px 16px; border:1px solid #d8e5ff; border-radius:13px; background:#edf4ff; margin-top:18px; }
+    #empty { padding:16px; text-align:center; background:#fff; border:1px dashed #cbd5e1; border-radius:12px; margin-top:14px; }
+    #empty[hidden] { display:none; }
+    footer { padding:20px 0 30px; text-align:center; color:var(--muted); border-top:1px solid var(--line); }
+    @media(max-width:600px) {
+      .hero { padding:25px 0 23px; border-radius:0 0 20px 20px; }
+      .service-grid, .tools-grid { grid-template-columns:1fr; }
+      .card, .tool { padding:16px; }
+      .section-heading { font-size:20px; }
+    }
+    @media(prefers-reduced-motion:reduce) {
+      html { scroll-behavior:auto; }
+      *,*::before,*::after { transition:none !important; }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-<header>
-<div class="wrap">
-<div class="brand">🌐 کارینو</div>
-<div>همه خدمات، یک‌جا</div>
-<div class="hero">
-<h1>کارهای اینترنتی‌ات را آسان‌تر انجام بده!</h1>
-<p>ثبت‌نام‌ها، آزمون‌ها و ابزارهای کاربردی در یک جا.</p>
-<div class="search">
-<input id="q" placeholder="جست‌وجوی خدمات..." aria-label="جست‌وجو">
-<button onclick="searchServices()">جست‌وجو</button>
-</div>
-</div>
-</div>
-</header>
-<main class="wrap">
-<h2>خدمات کارینو</h2>
-<div class="grid" id="services">
-<a class="card" data-key="دانشگاه کنکور دانشجو انتخاب رشته" href="#university">
-<div class="emoji">🎓</div><h3>دانشگاه و کنکور</h3><p>ثبت‌نام، انتخاب رشته و نتایج</p>
-</a>
-<a class="card" data-key="استخدام شغل آزمون کاریابی" href="#jobs">
-<div class="emoji">💼</div><h3>استخدام و آزمون‌ها</h3><p>فرصت‌ها و مهلت‌های ثبت‌نام</p>
-</a>
-<a class="card" data-key="اطلاعیه نتایج تمدید کارت آزمون" href="#news">
-<div class="emoji">📢</div><h3>اطلاعیه‌ها و نتایج</h3><p>خبرهای مهم و مهلت‌ها</p>
-</a>
-<a class="card" data-key="ابزار رایگان pdf عکس فایل" href="#tools">
-<div class="emoji">📄</div><h3>ابزارهای رایگان</h3><p>ابزارهای کاربردی اینترنتی</p>
-</a>
-<a class="card" data-key="درخواست خدمات سفارش" href="#request">
-<div class="emoji">📝</div><h3>درخواست خدمات</h3><p>راهنمایی و سفارش خدمات</p>
-</a>
-<a class="card" data-key="آگهی کسب و کار تبلیغات" href="#ads">
-<div class="emoji">🏪</div><h3>آگهی و کسب‌وکار</h3><p>معرفی خدمات و مشاغل</p>
-</a>
-</div>
-<p id="empty">موردی پیدا نشد.</p>
+  <header class="hero">
+    <div class="hero-inner">
+      <h1 class="brand">کارینو</h1>
+      <p class="tagline">همه خدمات، یک‌جا</p>
+      <div class="search-wrap">
+        <input id="q" type="search" placeholder="جست‌وجو؛ مثلاً محاسبه سن، PDF، دانشگاه..." aria-label="جست‌وجوی خدمات و ابزارها" autocomplete="off">
+        <p class="hero-hint">نام خدمت یا ابزار موردنظرت را بنویس.</p>
+      </div>
+    </div>
+  </header>
 
-<section class="note" id="university">
-<h2>🎓 دانشگاه و کنکور</h2>
-<p>برای اطلاع از ثبت‌نام‌ها و نتایج، منابع رسمی را بررسی کن.</p>
-<p><a href="https://www.sanjesh.org/" target="_blank" rel="noopener">ورود به سازمان سنجش</a></p>
-<p><a href="https://azmoon.org/" target="_blank" rel="noopener">سامانه آزمون دانشگاه آزاد</a></p>
-</section>
+  <main>
+    <h2 class="section-heading">خدمات پرکاربرد</h2>
+    <section id="services" class="service-grid" aria-label="دسته‌بندی خدمات">
+      <article class="card" data-keywords="دانشگاه کنکور سنجش ثبت نام انتخاب رشته نتایج">
+        <div class="icon">🎓</div>
+        <h3>دانشگاه و کنکور</h3>
+        <p>دسترسی سریع به سامانه‌های آموزشی و آزمون‌ها.</p>
+        <a href="https://www.sanjesh.org/" target="_blank" rel="noopener noreferrer">سازمان سنجش</a>
+        <a href="https://azmoon.org/" target="_blank" rel="noopener noreferrer">دانشگاه آزاد</a>
+      </article>
+      <article class="card" data-keywords="استخدام شغل آزمون استخدامی کاریابی">
+        <div class="icon">💼</div>
+        <h3>استخدام و آزمون‌ها</h3>
+        <p>دسترسی به اطلاعیه‌های استخدامی و آزمون‌ها.</p>
+        <a href="https://hrtc.ir/" target="_blank" rel="noopener noreferrer">مرکز آزمون جهاد دانشگاهی</a>
+      </article>
+      <article class="card" data-keywords="اطلاعیه اخبار نتایج مهلت ثبت نام تمدید">
+        <div class="icon">📢</div>
+        <h3>اطلاعیه‌ها و نتایج</h3>
+        <p>این بخش به‌مرور با اطلاعیه‌های معتبر به‌روزرسانی می‌شود.</p>
+      </article>
+      <article class="card" data-keywords="ابزار رایگان ابزار آنلاین محاسبه سن تبدیل عکس pdf کاهش حجم">
+        <div class="icon">🧰</div>
+        <h3>ابزارهای رایگان</h3>
+        <p>محاسبه سن و ابزارهای عکس و PDF را در همین صفحه استفاده کن.</p>
+        <a href="#free-tools">مشاهده ابزارها</a>
+      </article>
+      <article class="card" data-keywords="درخواست خدمات ثبت نام اینترنتی پیگیری پشتیبانی">
+        <div class="icon">📝</div>
+        <h3>درخواست خدمات</h3>
+        <p>برای ثبت درخواست خدمات اینترنتی، با مدیریت سایت در تماس باش.</p>
+        <a href="mailto:info@example.com">ایمیل نمونه</a>
+        <p class="small">این نشانی نمونه است؛ پیش از انتشار عمومی باید با ایمیل واقعی جایگزین شود.</p>
+      </article>
+      <article class="card" data-keywords="آگهی کسب و کار معرفی خدمات تبلیغات">
+        <div class="icon">📣</div>
+        <h3>آگهی و کسب‌وکار</h3>
+        <p>بخش معرفی کسب‌وکارها در نسخه‌های بعدی توسعه می‌یابد.</p>
+      </article>
+    </section>
 
-<section class="note" id="jobs">
-<h2>💼 استخدام و آزمون‌ها</h2>
-<p>فهرست فرصت‌های استخدامی در مراحل بعد به این بخش اضافه می‌شود.</p>
-</section>
+    <p id="empty" hidden>موردی پیدا نشد؛ عبارت دیگری را جست‌وجو کن.</p>
 
-<section class="note" id="news">
-<h2>📢 اطلاعیه‌ها و نتایج</h2>
-<p>اطلاعیه‌های بررسی‌شده در نسخه‌های بعدی منتشر خواهند شد.</p>
-</section>
+    <h2 class="section-heading" id="free-tools">ابزارهای رایگان کارینو</h2>
+    <section class="tools-grid" aria-label="ابزارهای رایگان">
+      <article class="tool" id="age-tool" data-keywords="سن محاسبه سن تاریخ تولد سن یاب">
+        <div class="icon">🎂</div>
+        <h3>محاسبه‌گر سن</h3>
+        <p>تاریخ تولد میلادی را انتخاب کن تا سن محاسبه شود.</p>
+        <label for="birthdate">تاریخ تولد</label>
+        <input id="birthdate" type="date">
+        <button type="button" id="age-button">محاسبه سن</button>
+        <p class="status" id="age-result" aria-live="polite"></p>
+      </article>
 
-<section class="note" id="tools">
-<h2>📄 ابزارهای رایگان</h2>
-<p>ابزار تبدیل عکس به PDF و سایر امکانات در مرحله بعد اضافه می‌شوند.</p>
-</section>
+      <article class="tool" id="image-pdf" data-keywords="عکس تصویر pdf پی دی اف تبدیل عکس مدارک اسکن">
+        <div class="icon">📄</div>
+        <h3>تبدیل عکس به PDF</h3>
+        <p>یک یا چند عکس انتخاب کن تا در یک فایل PDF قرار بگیرند.</p>
+        <label for="imageFiles">انتخاب عکس‌ها</label>
+        <input type="file" id="imageFiles" accept="image/jpeg,image/png,image/webp" multiple>
+        <button type="button" id="pdf-button">تبدیل و دریافت PDF</button>
+        <p class="status" id="pdf-status" aria-live="polite"></p>
+        <p class="small">برای ساخت PDF به اینترنت و بارگذاری کتابخانه نیاز است. عکس‌ها در مرورگر پردازش می‌شوند.</p>
+      </article>
 
-<section class="note" id="request">
-<h2>📝 درخواست خدمات</h2>
-<p>بخش ثبت درخواست هنوز فعال نیست. فعلاً اطلاعات شخصی و مدارک محرمانه را ارسال نکن.</p>
-</section>
+      <article class="tool" id="compress-tool" data-keywords="کاهش حجم عکس فشرده سازی کم کردن حجم تصویر عکس کم حجم">
+        <div class="icon">🗜️</div>
+        <h3>کاهش حجم عکس</h3>
+        <p>حجم عکس را برای بارگذاری در سامانه‌ها کاهش بده.</p>
+        <label for="compress-file">انتخاب عکس</label>
+        <input type="file" id="compress-file" accept="image/jpeg,image/png,image/webp">
+        <label for="compress-quality">کیفیت خروجی</label>
+        <select id="compress-quality">
+          <option value="0.9">کیفیت بالا</option>
+          <option value="0.7" selected>کیفیت متوسط</option>
+          <option value="0.5">حجم کمتر</option>
+        </select>
+        <button type="button" id="compress-button">کاهش حجم عکس</button>
+        <p class="status" id="compress-status" aria-live="polite"></p>
+        <a id="compress-download" class="download-link" hidden>دریافت عکس کم‌حجم</a>
+        <p class="small">خروجی JPEG است؛ عکس اصلی را تا بررسی نتیجه نگه دار.</p>
+      </article>
+    </section>
 
-<section class="note" id="ads">
-<h2>🏪 آگهی و کسب‌وکار</h2>
-<p>امکان معرفی کسب‌وکارها در آینده اضافه خواهد شد.</p>
-</section>
-  
-<section class="note" id="age-tool">
-  <h2>🎂 محاسبه‌گر سن</h2>
-  <p>تاریخ تولدت را انتخاب کن تا سنت محاسبه شود.</p>
-  <label for="birthdate">تاریخ تولد:</label>
-  <input id="birthdate" type="date"
-    style="display:block;width:100%;margin:12px 0;padding:12px;border:1px solid #ddd;border-radius:10px">
-  <button type="button" onclick="calculateAge()">محاسبه سن</button>
-  <p id="age-result" aria-live="polite" style="margin-top:12px"></p>
-</section>
-  <section class="note" id="image-pdf">
-  <h2>📄 تبدیل عکس به PDF</h2>
-  <p>یک یا چند عکس انتخاب کن و آن‌ها را به فایل PDF تبدیل کن.</p>
+    <div class="notice">
+      <strong>حریم خصوصی:</strong>
+      ابزارهای عکس روی دستگاه شما پردازش می‌شوند؛ این صفحه عکس‌ها را به سرور کارینو ارسال نمی‌کند.
+      برای تبدیل عکس به PDF، کتابخانه موردنیاز از یک سرویس بیرونی بارگذاری می‌شود.
+    </div>
+  </main>
 
-  <input
-    type="file"
-    id="imageFiles"
-    accept="image/jpeg,image/png,image/webp"
-    multiple
-    style="display:block;width:100%;margin:15px 0"
-  >
+  <footer>
+    <strong>کارینو | همه خدمات، یک‌جا</strong>
+    <div>نسخه آزمایشی؛ بخش اطلاعیه‌ها و درخواست خدمات در آینده تکمیل می‌شود.</div>
+  </footer>
 
-  <button type="button" onclick="convertImagesToPDF()">
-    تبدیل و دریافت فایل PDF
-  </button>
+  <script>
+    // جست‌وجوی هم‌زمان در کارت‌های خدمات و ابزارهای صفحه
+    function searchKarino() {
+      const input = document.getElementById('q');
+      const query = (input.value || '').trim().toLocaleLowerCase('fa-IR');
+      const items = [
+        ...document.querySelectorAll('#services .card'),
+        ...document.querySelectorAll('#free-tools .tool')
+      ];
+      let visibleCount = 0;
 
-  <p id="pdf-status" aria-live="polite"></p>
-</section>
-  
-<section class="note" id="compress-tool">
-  <h2>🗜️ کاهش حجم عکس</h2>
-  <p>عکس را انتخاب کن تا حجم آن کاهش یابد و بتوانی نسخه جدید را دریافت کنی.</p>
-
-  <input
-    type="file"
-    id="compress-file"
-    accept="image/jpeg,image/png,image/webp"
-    style="display:block;width:100%;margin:14px 0"
-  >
-
-  <label for="compress-quality">کیفیت عکس خروجی:</label>
-  <select id="compress-quality"
-    style="display:block;width:100%;padding:10px;margin:10px 0">
-    <option value="0.9">کیفیت بالا</option>
-    <option value="0.7" selected>کیفیت متوسط</option>
-    <option value="0.5">حجم کمتر</option>
-  </select>
-
-  <button type="button" onclick="compressKarinoImage()">
-    کاهش حجم عکس
-  </button>
-
-  <p id="compress-status" aria-live="polite"></p>
-  <a id="compress-download" hidden
-     style="display:inline-block;margin-top:10px">
-    دریافت عکس کم‌حجم
-  </a>
-</section>
-
-</main>
-<footer>کارینو | سامانه مستقل خدمات آنلاین ایران<br>نسخه اولیه آزمایشی</footer>
-<script>
-function searchServices(){
-const q=document.getElementById('q').value.trim().toLowerCase();
-let count=0;
-document.querySelectorAll('#services .card').forEach(card=>{
-const text=(card.innerText+' '+card.dataset.key).toLowerCase();
-const show=text.includes(q);
-card.style.display=show?'block':'none';
-if(show)count++;
-});
-document.getElementById('empty').style.display=count?'none':'block';
-}
-document.getElementById('q').addEventListener('input',searchServices);
-
-function searchKarino() {
-  const input = document.getElementById('q');
-  const query = input.value.trim().toLocaleLowerCase('fa-IR');
-
-  const searchableItems = [
-    ...document.querySelectorAll('#services .card'),
-    ...document.querySelectorAll('#age-tool, #image-pdf, #compress-tool')
-  ];
-
-  let visibleCount = 0;
-
-  searchableItems.forEach(item => {
-    const text = (
-      item.innerText + ' ' +
-      (item.getAttribute('data-keywords') || '')
-      <section class="note" id="age-tool"
-  data-keywords="سن تاریخ تولد سن یاب محاسبه سن">
-    <section class="note" id="image-pdf"
-  data-keywords="عکس تصویر pdf پی دی اف تبدیل عکس مدارک">
-    <section class="note" id="compress-tool"
-  data-keywords="کاهش حجم عکس فشرده سازی کم کردن حجم تصویر">
-    ).toLocaleLowerCase('fa-IR');
-
-    const match = !query || text.includes(query);
-
-    item.hidden = !match;
-
-    if (match) visibleCount++;
-  });
-
-  const empty = document.getElementById('empty');
-
-  if (empty) {
-    empty.hidden = visibleCount > 0;
-    empty.textContent = 'موردی پیدا نشد؛ عبارت دیگری را جست‌وجو کن.';
-  }
-}
-
-const karinoSearchInput = document.getElementById('q');
-
-if (karinoSearchInput) {
-  karinoSearchInput.removeEventListener('input', searchKarino);
-  karinoSearchInput.addEventListener('input', searchKarino);
-}
-
-function calculateAge() {
-  const field = document.getElementById('birthdate');
-  const result = document.getElementById('age-result');
-
-  if (!field.value) {
-    result.textContent = 'لطفاً تاریخ تولد را انتخاب کن.';
-    return;
-  }
-
-  const birth = new Date(field.value + 'T00:00:00');
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  if (birth > today) {
-    result.textContent = 'تاریخ تولد نمی‌تواند در آینده باشد.';
-    return;
-  }
-
-  let years = today.getFullYear() - birth.getFullYear();
-  let months = today.getMonth() - birth.getMonth();
-  let days = today.getDate() - birth.getDate();
-
-  if (days < 0) {
-    months--;
-    const previousMonthDays = new Date(
-      today.getFullYear(), today.getMonth(), 0
-    ).getDate();
-    days += previousMonthDays;
-  }
-
-  if (months < 0) {
-    years--;
-    months += 12;
-  }
-
-  result.textContent =
-    'سن شما: ' + years + ' سال، ' +
-    months + ' ماه و ' + days + ' روز';
-}
-  async function convertImagesToPDF() {
-  const input = document.getElementById('imageFiles');
-  const status = document.getElementById('pdf-status');
-
-  if (!input.files.length) {
-    status.textContent = 'لطفاً ابتدا عکس انتخاب کن.';
-    return;
-  }
-
-  if (!window.jspdf) {
-    status.textContent =
-      'کتابخانه PDF بارگذاری نشده است. اینترنت را بررسی و صفحه را تازه‌سازی کن.';
-    return;
-  }
-
-  const button = document.querySelector(
-    '#image-pdf button'
-  );
-
-  button.disabled = true;
-  status.textContent = 'در حال ساخت فایل PDF...';
-
-  try {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const files = Array.from(input.files);
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-
-      if (!file.type.startsWith('image/')) continue;
-
-      const data = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
+      items.forEach(item => {
+        const text = (
+          (item.innerText || '') + ' ' +
+          (item.getAttribute('data-keywords') || '')
+        ).toLocaleLowerCase('fa-IR');
+        const match = !query || text.includes(query);
+        item.hidden = !match;
+        if (match) visibleCount++;
       });
 
-      const image = await new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = reject;
-        img.src = data;
-      });
-
-      if (i > 0) pdf.addPage();
-
-      const pageWidth = 190;
-      const pageHeight = 277;
-      const scale = Math.min(
-        pageWidth / image.width,
-        pageHeight / image.height
-      );
-
-      const width = image.width * scale;
-      const height = image.height * scale;
-      const x = (210 - width) / 2;
-      const y = (297 - height) / 2;
-
-      const canvas = document.createElement('canvas');
-      canvas.width = image.width;
-      canvas.height = image.height;
-      canvas.getContext('2d').drawImage(image, 0, 0);
-
-      pdf.addImage(
-        canvas.toDataURL('image/jpeg', 0.92),
-        'JPEG',
-        x,
-        y,
-        width,
-        height
-      );
+      const empty = document.getElementById('empty');
+      empty.hidden = visibleCount > 0;
     }
 
-    pdf.save('karino-images.pdf');
-    status.textContent = 'فایل PDF آماده شد.';
-  } catch (error) {
-    status.textContent =
-      'تبدیل انجام نشد. عکس دیگری امتحان کن.';
-  } finally {
-    button.disabled = false;
-  }
-}
-  
-async function compressKarinoImage() {
-  const input = document.getElementById('compress-file');
-  const quality = Number(
-    document.getElementById('compress-quality').value
-  );
-  const status = document.getElementById('compress-status');
-  const download = document.getElementById('compress-download');
+    document.getElementById('q').addEventListener('input', searchKarino);
 
-  download.hidden = true;
-  download.removeAttribute('href');
+    // محاسبه سن بر اساس تاریخ میلادی انتخاب‌شده
+    document.getElementById('age-button').addEventListener('click', () => {
+      const field = document.getElementById('birthdate');
+      const result = document.getElementById('age-result');
+      if (!field.value) {
+        result.textContent = 'لطفاً تاریخ تولد را انتخاب کن.';
+        return;
+      }
+      const birth = new Date(field.value + 'T00:00:00');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-  if (!input.files.length) {
-    status.textContent = 'لطفاً ابتدا یک عکس انتخاب کن.';
-    return;
-  }
+      if (Number.isNaN(birth.getTime()) || birth > today) {
+        result.textContent = 'تاریخ تولد معتبر نیست یا در آینده قرار دارد.';
+        return;
+      }
 
-  const file = input.files[0];
+      let years = today.getFullYear() - birth.getFullYear();
+      let months = today.getMonth() - birth.getMonth();
+      let days = today.getDate() - birth.getDate();
 
-  if (!file.type.startsWith('image/')) {
-    status.textContent = 'فایل انتخاب‌شده عکس معتبر نیست.';
-    return;
-  }
+      if (days < 0) {
+        months--;
+        days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+      }
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+      result.textContent = `سن شما: ${years} سال، ${months} ماه و ${days} روز`;
+    });
 
-  status.textContent = 'در حال کاهش حجم عکس...';
-
-  try {
-    const imageURL = URL.createObjectURL(file);
-
-    try {
-      const img = await new Promise((resolve, reject) => {
-        const image = new Image();
-        image.onload = () => resolve(image);
-        image.onerror = reject;
-        image.src = imageURL;
-      });
-
-      const maxSide = 2000;
-      const scale = Math.min(
-        1,
-        maxSide / Math.max(img.width, img.height)
+    // تبدیل چند عکس به PDF
+    document.getElementById('pdf-button').addEventListener('click', async () => {
+      const input = document.getElementById('imageFiles');
+      const status = document.getElementById('pdf-status');
+      const button = document.getElementById('pdf-button');
+      const files = Array.from(input.files || []).filter(file =>
+        ['image/jpeg', 'image/png', 'image/webp'].includes(file.type)
       );
 
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.max(1, Math.round(img.width * scale));
-      canvas.height = Math.max(1, Math.round(img.height * scale));
+      if (!files.length) {
+        status.textContent = 'لطفاً یک یا چند عکس JPG، PNG یا WEBP انتخاب کن.';
+        return;
+      }
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        status.textContent = 'کتابخانه PDF بارگذاری نشده است. اینترنت را بررسی و صفحه را تازه‌سازی کن.';
+        return;
+      }
 
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      button.disabled = true;
+      status.textContent = 'در حال ساخت فایل PDF...';
 
-      const blob = await new Promise(resolve =>
-        canvas.toBlob(resolve, 'image/jpeg', quality)
-      );
+      try {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
 
-      if (!blob) throw new Error('تولید عکس ناموفق بود.');
+        for (let i = 0; i < files.length; i++) {
+          const data = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error('خواندن عکس ناموفق بود.'));
+            reader.readAsDataURL(files[i]);
+          });
 
-      const oldSize = (file.size / 1024).toFixed(1);
-      const newSize = (blob.size / 1024).toFixed(1);
+          const image = await new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = () => reject(new Error('باز کردن عکس ناموفق بود.'));
+            img.src = data;
+          });
 
-      download.href = URL.createObjectURL(blob);
-      download.download = 'karino-compressed.jpg';
-      download.hidden = false;
+          if (i > 0) pdf.addPage();
+          const margin = 10;
+          const maxW = 210 - margin * 2;
+          const maxH = 297 - margin * 2;
+          const scale = Math.min(maxW / image.width, maxH / image.height);
+          const w = image.width * scale;
+          const h = image.height * scale;
+          const x = (210 - w) / 2;
+          const y = (297 - h) / 2;
 
-      const saved = file.size > 0
-        ? Math.round((1 - blob.size / file.size) * 100)
-        : 0;
+          const canvas = document.createElement('canvas');
+          canvas.width = image.width;
+          canvas.height = image.height;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(image, 0, 0);
+          pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', x, y, w, h);
+        }
 
-      status.textContent =
-        `حجم اولیه: ${oldSize} کیلوبایت؛ ` +
-        `حجم جدید: ${newSize} کیلوبایت؛ ` +
-        (saved > 0
-          ? `کاهش حجم: ${saved} درصد`
-          : 'حجم فایل کاهش پیدا نکرده است.');
-    } finally {
-      URL.revokeObjectURL(imageURL);
-    }
-  } catch (error) {
-    status.textContent =
-      'تبدیل ناموفق بود. لطفاً عکس دیگری امتحان کن.';
-  }
-}
-</script>
+        pdf.save('karino-images.pdf');
+        status.textContent = `فایل PDF با ${files.length} صفحه آماده شد.`;
+      } catch (error) {
+        status.textContent = 'تبدیل انجام نشد. عکس دیگری امتحان کن یا صفحه را تازه‌سازی کن.';
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    // کاهش حجم عکس
+    let previousCompressedUrl = null;
+    document.getElementById('compress-button').addEventListener('click', async () => {
+      const input = document.getElementById('compress-file');
+      const quality = Number(document.getElementById('compress-quality').value);
+      const status = document.getElementById('compress-status');
+      const button = document.getElementById('compress-button');
+      const download = document.getElementById('compress-download');
+
+      download.hidden = true;
+      if (previousCompressedUrl) {
+        URL.revokeObjectURL(previousCompressedUrl);
+        previousCompressedUrl = null;
+      }
+
+      const file = input.files && input.files[0];
+      if (!file) {
+        status.textContent = 'لطفاً ابتدا یک عکس انتخاب کن.';
+        return;
+      }
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+        status.textContent = 'لطفاً عکس JPG، PNG یا WEBP انتخاب کن.';
+        return;
+      }
+
+      button.disabled = true;
+      status.textContent = 'در حال کاهش حجم عکس...';
+
+      let imageURL;
+      try {
+        imageURL = URL.createObjectURL(file);
+        const img = await new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = () => resolve(image);
+          image.onerror = () => reject(new Error('باز کردن عکس ناموفق بود.'));
+          image.src = imageURL;
+        });
+
+        const maxSide = 2000;
+        const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(img.width * scale));
+        canvas.height = Math.max(1, Math.round(img.height * scale));
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+        if (!blob) throw new Error('تولید عکس ناموفق بود.');
+
+        previousCompressedUrl = URL.createObjectURL(blob);
+        download.href = previousCompressedUrl;
+        download.download = 'karino-compressed.jpg';
+        download.hidden = false;
+
+        const oldKB = (file.size / 1024).toFixed(1);
+        const newKB = (blob.size / 1024).toFixed(1);
+        if (blob.size < file.size) {
+          const saved = Math.round((1 - blob.size / file.size) * 100);
+          status.textContent = `حجم اولیه: ${oldKB} کیلوبایت؛ حجم جدید: ${newKB} کیلوبایت؛ کاهش حجم: ${saved}٪`;
+        } else {
+          status.textContent = `حجم اولیه: ${oldKB} کیلوبایت؛ حجم جدید: ${newKB} کیلوبایت. این عکس با تنظیم فعلی کوچک‌تر نشد.`;
+        }
+      } catch (error) {
+        status.textContent = 'کاهش حجم انجام نشد. لطفاً عکس دیگری امتحان کن.';
+      } finally {
+        if (imageURL) URL.revokeObjectURL(imageURL);
+        button.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
