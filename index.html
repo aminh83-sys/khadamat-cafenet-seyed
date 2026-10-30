@@ -972,6 +972,8 @@ removeBgFile.addEventListener('change', () => {
 });
 
 // ساخت خروجی پس‌زمینه حذف‌شده
+let removeBgForeground = null;
+
 function createRemoveBgOutput(results) {
   const image = results.image;
   const width = image.naturalWidth || image.width;
@@ -983,33 +985,98 @@ function createRemoveBgOutput(results) {
 
   const foregroundCtx = foreground.getContext('2d');
   foregroundCtx.drawImage(image, 0, 0, width, height);
+
   foregroundCtx.globalCompositeOperation = 'destination-in';
   foregroundCtx.drawImage(results.segmentationMask, 0, 0, width, height);
 
+  removeBgForeground = foreground;
+
+  removeBgAdjust.style.display = 'block';
+
+  renderRemoveBgOutput();
+}
+
+function renderRemoveBgOutput() {
+  if (!removeBgForeground) return;
+
+  const width = removeBgForeground.width;
+  const height = removeBgForeground.height;
+
   let outputWidth = width;
   let outputHeight = height;
-  let sx = 0;
-  let sy = 0;
+
+  if (removeBgSize.value !== 'original') {
+    const parts = removeBgSize.value.split('x').map(Number);
+    outputWidth = parts[0];
+    outputHeight = parts[1];
+  }
+
+  const ratio = outputWidth / outputHeight;
+
   let sw = width;
   let sh = height;
 
-  const selectedSize = removeBgSize.value;
-
-  if (selectedSize !== 'original') {
-    const parts = selectedSize.split('x').map(Number);
-    outputWidth = parts[0];
-    outputHeight = parts[1];
-
-    const ratio = outputWidth / outputHeight;
-
-    if (width / height > ratio) {
-      sw = height * ratio;
-      sx = (width - sw) / 2;
-    } else {
-      sh = width / ratio;
-      sy = (height - sh) / 2;
-    }
+  if (width / height > ratio) {
+    sw = height * ratio;
+  } else {
+    sh = width / ratio;
   }
+
+  const zoom = Number(removeBgZoom.value) / 100;
+
+  sw /= zoom;
+  sh /= zoom;
+
+  const maxX = width - sw;
+  const maxY = height - sh;
+
+  let sx = maxX / 2 + (Number(removeBgX.value) / 100) * maxX / 2;
+  let sy = maxY / 2 + (Number(removeBgY.value) / 100) * maxY / 2;
+
+  sx = Math.max(0, Math.min(sx, maxX));
+  sy = Math.max(0, Math.min(sy, maxY));
+
+  const canvas = removeBgCanvas;
+  canvas.width = outputWidth;
+  canvas.height = outputHeight;
+
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, outputWidth, outputHeight);
+
+  const colors = {
+    white: '#ffffff',
+    blue: '#1685d9',
+    red: '#d93636'
+  };
+
+  if (removeBgColor.value !== 'transparent') {
+    ctx.fillStyle = colors[removeBgColor.value] || '#ffffff';
+    ctx.fillRect(0, 0, outputWidth, outputHeight);
+  }
+
+  ctx.drawImage(
+    removeBgForeground,
+    sx, sy, sw, sh,
+    0, 0, outputWidth, outputHeight
+  );
+
+  removeBgPreview.style.display = 'block';
+
+  const format = removeBgColor.value === 'transparent'
+    ? 'image/png'
+    : 'image/jpeg';
+
+  canvas.toBlob(blob => {
+    if (!blob) {
+      removeBgStatus.textContent = 'ساخت عکس نهایی ناموفق بود.';
+      return;
+    }
+
+    removeBgBlob = blob;
+    removeBgDownload.hidden = false;
+    removeBgStatus.textContent = 'عکس آماده دانلود است.';
+  }, format, 0.95);
+}
 
   const canvas = removeBgCanvas;
   canvas.width = outputWidth;
