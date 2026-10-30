@@ -218,6 +218,11 @@
   <div class="icon">✂️</div>
   <h3>برش عکس</h3>
   <p>عکس را انتخاب کن، نسبت برش را مشخص کن و خروجی دلخواه را دریافت کن.</p>
+  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0;">
+  <button type="button" id="crop-rotate-left">↶ چرخش چپ</button>
+  <button type="button" id="crop-rotate-right">↷ چرخش راست</button>
+  <button type="button" id="crop-rotate-reset">بازنشانی چرخش</button>
+</div>
 <canvas id="crop-preview" style="display:none;width:100%;max-width:300px;height:auto;border:1px solid #ddd;border-radius:10px;margin:12px auto;"></canvas>
   <label for="crop-file">انتخاب عکس</label>
   <input type="file" id="crop-file" accept="image/jpeg,image/png,image/webp">
