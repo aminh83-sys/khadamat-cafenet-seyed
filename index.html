@@ -670,12 +670,14 @@ const cropButton = document.getElementById('crop-button');
 const cropStatus = document.getElementById('crop-status');
 const cropPreview = document.getElementById('crop-preview');
     function getCropArea() {
+  const source = getRotatedImageCanvas();
+
   const parts = cropRatio.value.split(':').map(Number);
   const ratio = parts[0] / parts[1];
   const zoom = Number(cropZoom.value) / 100;
 
-  let width = cropImage.width;
-  let height = cropImage.height;
+  let width = source.width;
+  let height = source.height;
 
   if (width / height > ratio) {
     width = height * ratio;
@@ -686,8 +688,8 @@ const cropPreview = document.getElementById('crop-preview');
   width = width / zoom;
   height = height / zoom;
 
-  const maxX = cropImage.width - width;
-  const maxY = cropImage.height - height;
+  const maxX = source.width - width;
+  const maxY = source.height - height;
 
   return {
     x: maxX * Number(cropX.value) / 100,
@@ -699,35 +701,6 @@ const cropPreview = document.getElementById('crop-preview');
 }
 const cropDownload = document.getElementById('crop-download');
 
-
-function getCropArea() {
-  const parts = cropRatio.value.split(':').map(Number);
-  const ratio = parts[0] / parts[1];
-  const zoom = Number(cropZoom.value) / 100;
-
-  let width = cropImage.width;
-  let height = cropImage.height;
-
-  if (width / height > ratio) {
-    width = height * ratio;
-  } else {
-    height = width / ratio;
-  }
-
-  width = width / zoom;
-  height = height / zoom;
-
-  const maxX = cropImage.width - width;
-  const maxY = cropImage.height - height;
-
-  return {
-    x: maxX * Number(cropX.value) / 100,
-    y: maxY * Number(cropY.value) / 100,
-    width,
-    height,
-    ratio
-  };
-}
 function updateCropPreview() {
   if (!cropImage) return;
 
