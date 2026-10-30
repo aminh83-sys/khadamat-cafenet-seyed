@@ -704,7 +704,9 @@ const cropDownload = document.getElementById('crop-download');
 function updateCropPreview() {
   if (!cropImage) return;
 
+  const source = getRotatedImageCanvas();
   const area = getCropArea();
+
   const previewWidth = 300;
   const previewHeight = Math.round(previewWidth / area.ratio);
 
@@ -716,7 +718,7 @@ function updateCropPreview() {
   ctx.clearRect(0, 0, previewWidth, previewHeight);
 
   ctx.drawImage(
-    cropImage,
+    source,
     area.x, area.y, area.width, area.height,
     0, 0, previewWidth, previewHeight
   );
