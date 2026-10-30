@@ -268,7 +268,20 @@
   <div id="remove-bg-preview" style="display:none;margin:15px auto;text-align:center;">
     <canvas id="remove-bg-canvas" style="width:100%;max-width:300px;border:1px solid #ddd;border-radius:10px;"></canvas>
   </div>
+<div id="remove-bg-adjust" style="display:none;margin:15px 0;">
 
+  <label for="remove-bg-zoom">بزرگ‌نمایی عکس</label>
+  <input type="range" id="remove-bg-zoom" min="100" max="200" value="100">
+
+  <label for="remove-bg-x">جابجایی افقی</label>
+  <input type="range" id="remove-bg-x" min="-100" max="100" value="0">
+
+  <label for="remove-bg-y">جابجایی عمودی</label>
+  <input type="range" id="remove-bg-y" min="-100" max="100" value="0">
+
+  <button type="button" id="remove-bg-reset">بازنشانی تنظیمات</button>
+
+</div>
   <label for="remove-bg-color">انتخاب پس‌زمینه</label>
   <select id="remove-bg-color">
     <option value="transparent">شفاف</option>
