@@ -978,9 +978,22 @@ removeBgFile.addEventListener('change', () => {
   const image = new Image();
 
   image.onload = () => {
-    removeBgImage = image;
-    removeBgStatus.textContent = 'عکس انتخاب شد. برای حذف پس‌زمینه کلیک کن.';
-  };
+  removeBgImage = image;
+  removeBgBlob = null;
+
+  removeBgCanvas.width = image.naturalWidth;
+  removeBgCanvas.height = image.naturalHeight;
+
+  const ctx = removeBgCanvas.getContext('2d');
+  ctx.clearRect(0, 0, removeBgCanvas.width, removeBgCanvas.height);
+  ctx.drawImage(image, 0, 0);
+
+  removeBgPreview.style.display = 'block';
+  removeBgAdjust.style.display = 'none';
+  removeBgDownload.hidden = true;
+
+  removeBgStatus.textContent = 'عکس انتخاب شد. برای حذف پس‌زمینه کلیک کن.';
+};
 
   image.onerror = () => {
     removeBgStatus.textContent = 'خواندن عکس ناموفق بود.';
