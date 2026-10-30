@@ -777,6 +777,7 @@ cropButton.addEventListener('click', () => {
 
   try {
     const area = getCropArea();
+    const source = getRotatedImageCanvas();
     const outputWidth = area.ratio >= 1 ? 1200 : Math.round(1200 * area.ratio);
     const outputHeight = area.ratio >= 1 ? Math.round(1200 / area.ratio) : 1200;
 
@@ -788,7 +789,7 @@ cropButton.addEventListener('click', () => {
     if (!ctx) throw new Error('Canvas unavailable');
 
     ctx.drawImage(
-      cropImage,
+      source,
       area.x, area.y, area.width, area.height,
       0, 0, outputWidth, outputHeight
     );
