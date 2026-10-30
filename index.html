@@ -1132,48 +1132,7 @@ function renderRemoveBgOutput() {
   }, format, 0.95);
 }
 
-  const canvas = removeBgCanvas;
-  canvas.width = outputWidth;
-  canvas.height = outputHeight;
-
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, outputWidth, outputHeight);
-
-  const colors = {
-    white: '#ffffff',
-    blue: '#1685d9',
-    red: '#d93636'
-  };
-
-  if (removeBgColor.value !== 'transparent') {
-    ctx.fillStyle = colors[removeBgColor.value] || '#ffffff';
-    ctx.fillRect(0, 0, outputWidth, outputHeight);
-  }
-
-  ctx.drawImage(
-    foreground,
-    sx, sy, sw, sh,
-    0, 0, outputWidth, outputHeight
-  );
-
-  removeBgPreview.style.display = 'block';
-
-  const format = removeBgColor.value === 'transparent'
-    ? 'image/png'
-    : 'image/jpeg';
-
-  canvas.toBlob(blob => {
-    if (!blob) {
-      removeBgStatus.textContent = 'ساخت عکس نهایی ناموفق بود.';
-      return;
-    }
-
-    removeBgBlob = blob;
-    removeBgDownload.hidden = false;
-    removeBgStatus.textContent = 'عکس آماده دانلود است.';
-  }, format, 0.95);
-}
-
+ 
 // اجرای هوش مصنوعی
 removeBgButton.addEventListener('click', async () => {
   if (!removeBgImage) {
