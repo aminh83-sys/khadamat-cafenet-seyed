@@ -622,6 +622,34 @@ const cropQuality = document.getElementById('crop-quality');
 const cropButton = document.getElementById('crop-button');
 const cropStatus = document.getElementById('crop-status');
 const cropPreview = document.getElementById('crop-preview');
+    function getCropArea() {
+  const parts = cropRatio.value.split(':').map(Number);
+  const ratio = parts[0] / parts[1];
+  const zoom = Number(cropZoom.value) / 100;
+
+  let width = cropImage.width;
+  let height = cropImage.height;
+
+  if (width / height > ratio) {
+    width = height * ratio;
+  } else {
+    height = width / ratio;
+  }
+
+  width = width / zoom;
+  height = height / zoom;
+
+  const maxX = cropImage.width - width;
+  const maxY = cropImage.height - height;
+
+  return {
+    x: maxX * Number(cropX.value) / 100,
+    y: maxY * Number(cropY.value) / 100,
+    width,
+    height,
+    ratio
+  };
+}
 const cropDownload = document.getElementById('crop-download');
 
 
