@@ -256,6 +256,42 @@
   <a id="crop-download" class="download-link" hidden>دانلود عکس برش‌خورده</a>
 
 </article>
+  <article class="tool" id="remove-bg-tool" data-keywords="حذف پس زمینه عکس پرسنلی عکس پاسپورتی زمینه سفید آبی قرمز شفاف">
+
+  <div class="icon">🪄</div>
+  <h3>حذف پس‌زمینه عکس پرسنلی</h3>
+  <p>پس‌زمینه عکس را حذف کن و رنگ دلخواه را انتخاب کن.</p>
+
+  <label for="remove-bg-file">انتخاب عکس پرسنلی</label>
+  <input type="file" id="remove-bg-file" accept="image/jpeg,image/png,image/webp">
+
+  <div id="remove-bg-preview" style="display:none;margin:15px auto;text-align:center;">
+    <canvas id="remove-bg-canvas" style="width:100%;max-width:300px;border:1px solid #ddd;border-radius:10px;"></canvas>
+  </div>
+
+  <label for="remove-bg-color">انتخاب پس‌زمینه</label>
+  <select id="remove-bg-color">
+    <option value="transparent">شفاف</option>
+    <option value="white" selected>سفید</option>
+    <option value="blue">آبی</option>
+    <option value="red">قرمز</option>
+  </select>
+
+  <label for="remove-bg-size">اندازه خروجی</label>
+  <select id="remove-bg-size">
+    <option value="original">اندازه اصلی</option>
+    <option value="300x400" selected>۳۰۰ × ۴۰۰ (۳×۴)</option>
+    <option value="600x800">۶۰۰ × ۸۰۰</option>
+    <option value="900x1200">۹۰۰ × ۱۲۰۰</option>
+  </select>
+
+  <button type="button" id="remove-bg-button">حذف پس‌زمینه عکس</button>
+
+  <p class="status" id="remove-bg-status" aria-live="polite"></p>
+
+  <button type="button" id="remove-bg-download" hidden>دانلود عکس نهایی</button>
+
+</article>
 </section>
 
 
