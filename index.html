@@ -624,7 +624,13 @@ let cropRotation = 0;
 const cropRotateLeft = document.getElementById('crop-rotate-left');
 const cropRotateRight = document.getElementById('crop-rotate-right');
 const cropRotateReset = document.getElementById('crop-rotate-reset');
+const cropRotate180 = document.getElementById('crop-rotate-180');
 
+cropRotate180.addEventListener('click', () => {
+  cropRotation = (cropRotation + 180) % 360;
+  updateCropPreview();
+});
+    
 // چرخش به چپ
 cropRotateLeft.addEventListener('click', () => {
   cropRotation = (cropRotation - 90 + 360) % 360;
