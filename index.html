@@ -914,7 +914,32 @@ const removeBgStatus = document.getElementById('remove-bg-status');
 let removeBgImage = null;
 let removeBgBlob = null;
 let selfieSegmenter = null;
+const removeBgAdjust = document.getElementById('remove-bg-adjust');
+const removeBgZoom = document.getElementById('remove-bg-zoom');
+const removeBgX = document.getElementById('remove-bg-x');
+const removeBgY = document.getElementById('remove-bg-y');
+const removeBgReset = document.getElementById('remove-bg-reset');
 
+// تغییر تنظیمات کادر عکس
+removeBgZoom.addEventListener('input', () => {
+  renderRemoveBgOutput();
+});
+
+removeBgX.addEventListener('input', () => {
+  renderRemoveBgOutput();
+});
+
+removeBgY.addEventListener('input', () => {
+  renderRemoveBgOutput();
+});
+
+// بازنشانی تنظیمات
+removeBgReset.addEventListener('click', () => {
+  removeBgZoom.value = 100;
+  removeBgX.value = 0;
+  removeBgY.value = 0;
+  renderRemoveBgOutput();
+});
 // انتخاب عکس
 removeBgFile.addEventListener('change', () => {
   const file = removeBgFile.files[0];
