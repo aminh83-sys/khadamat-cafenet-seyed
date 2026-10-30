@@ -212,6 +212,42 @@
     <a id="photo-size-download" class="download-link" hidden>دانلود عکس آماده</a>
     <p class="small">عکس به‌صورت برش مرکزی با نسبت ۳ به ۴ آماده می‌شود. قبل از استفاده، کادر و چهره را بررسی کن.</p>
   </article>
+  
+<article class="tool" id="crop-tool" data-keywords="برش عکس کراپ تصویر بریدن عکس تغییر کادر نسبت تصویر">
+
+  <div class="icon">✂️</div>
+  <h3>برش عکس</h3>
+  <p>عکس را انتخاب کن، نسبت برش را مشخص کن و خروجی دلخواه را دریافت کن.</p>
+
+  <label for="crop-file">انتخاب عکس</label>
+  <input type="file" id="crop-file" accept="image/jpeg,image/png,image/webp">
+
+  <label for="crop-ratio">نسبت برش عکس</label>
+  <select id="crop-ratio">
+    <option value="1:1">مربع ۱×۱</option>
+    <option value="3:4" selected>عمودی ۳×۴</option>
+    <option value="4:3">افقی ۴×۳</option>
+    <option value="16:9">عریض ۱۶×۹</option>
+  </select>
+
+  <label for="crop-x">تنظیم برش افقی</label>
+  <input type="range" id="crop-x" min="0" max="100" value="50">
+
+  <label for="crop-y">تنظیم برش عمودی</label>
+  <input type="range" id="crop-y" min="0" max="100" value="50">
+
+  <label for="crop-quality">کیفیت خروجی</label>
+  <select id="crop-quality">
+    <option value="0.9">کیفیت بالا</option>
+    <option value="0.8" selected>کیفیت متوسط</option>
+    <option value="0.65">حجم کمتر</option>
+  </select>
+
+  <button type="button" id="crop-button">برش و آماده‌سازی عکس</button>
+  <p class="status" id="crop-status" aria-live="polite"></p>
+  <a id="crop-download" class="download-link" hidden>دانلود عکس برش‌خورده</a>
+
+</article>
 </section>
 
 
@@ -236,6 +272,7 @@
     ورود به سامانه رسمی آزمون
   </a>
 </div>
+  
 </section>
 
   <footer>
