@@ -888,6 +888,192 @@ cropButton.addEventListener('click', () => {
   }
 });
 
+// ابزار حذف پس‌زمینه عکس پرسنلی کارینو
+const removeBgFile = document.getElementById('remove-bg-file');
+const removeBgCanvas = document.getElementById('remove-bg-canvas');
+const removeBgPreview = document.getElementById('remove-bg-preview');
+const removeBgColor = document.getElementById('remove-bg-color');
+const removeBgSize = document.getElementById('remove-bg-size');
+const removeBgButton = document.getElementById('remove-bg-button');
+const removeBgDownload = document.getElementById('remove-bg-download');
+const removeBgStatus = document.getElementById('remove-bg-status');
+
+let removeBgImage = null;
+let removeBgBlob = null;
+let selfieSegmenter = null;
+
+// انتخاب عکس
+removeBgFile.addEventListener('change', () => {
+  const file = removeBgFile.files[0];
+
+  removeBgImage = null;
+  removeBgBlob = null;
+  removeBgPreview.style.display = 'none';
+  removeBgDownload.hidden = true;
+  removeBgStatus.textContent = '';
+
+  if (!file) return;
+
+  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+    removeBgStatus.textContent = 'لطفاً عکس JPG، PNG یا WEBP انتخاب کن.';
+    return;
+  }
+
+  const image = new Image();
+
+  image.onload = () => {
+    removeBgImage = image;
+    removeBgStatus.textContent = 'عکس انتخاب شد. برای حذف پس‌زمینه کلیک کن.';
+  };
+
+  image.onerror = () => {
+    removeBgStatus.textContent = 'خواندن عکس ناموفق بود.';
+  };
+
+  image.src = URL.createObjectURL(file);
+});
+
+// ساخت خروجی پس‌زمینه حذف‌شده
+function createRemoveBgOutput(results) {
+  const image = results.image;
+  const width = image.naturalWidth || image.width;
+  const height = image.naturalHeight || image.height;
+
+  const foreground = document.createElement('canvas');
+  foreground.width = width;
+  foreground.height = height;
+
+  const foregroundCtx = foreground.getContext('2d');
+  foregroundCtx.drawImage(image, 0, 0, width, height);
+  foregroundCtx.globalCompositeOperation = 'destination-in';
+  foregroundCtx.drawImage(results.segmentationMask, 0, 0, width, height);
+
+  let outputWidth = width;
+  let outputHeight = height;
+  let sx = 0;
+  let sy = 0;
+  let sw = width;
+  let sh = height;
+
+  const selectedSize = removeBgSize.value;
+
+  if (selectedSize !== 'original') {
+    const parts = selectedSize.split('x').map(Number);
+    outputWidth = parts[0];
+    outputHeight = parts[1];
+
+    const ratio = outputWidth / outputHeight;
+
+    if (width / height > ratio) {
+      sw = height * ratio;
+      sx = (width - sw) / 2;
+    } else {
+      sh = width / ratio;
+      sy = (height - sh) / 2;
+    }
+  }
+
+  const canvas = removeBgCanvas;
+  canvas.width = outputWidth;
+  canvas.height = outputHeight;
+
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, outputWidth, outputHeight);
+
+  const colors = {
+    white: '#ffffff',
+    blue: '#1685d9',
+    red: '#d93636'
+  };
+
+  if (removeBgColor.value !== 'transparent') {
+    ctx.fillStyle = colors[removeBgColor.value] || '#ffffff';
+    ctx.fillRect(0, 0, outputWidth, outputHeight);
+  }
+
+  ctx.drawImage(
+    foreground,
+    sx, sy, sw, sh,
+    0, 0, outputWidth, outputHeight
+  );
+
+  removeBgPreview.style.display = 'block';
+
+  const format = removeBgColor.value === 'transparent'
+    ? 'image/png'
+    : 'image/jpeg';
+
+  canvas.toBlob(blob => {
+    if (!blob) {
+      removeBgStatus.textContent = 'ساخت عکس نهایی ناموفق بود.';
+      return;
+    }
+
+    removeBgBlob = blob;
+    removeBgDownload.hidden = false;
+    removeBgStatus.textContent = 'عکس آماده دانلود است.';
+  }, format, 0.95);
+}
+
+// اجرای هوش مصنوعی
+removeBgButton.addEventListener('click', async () => {
+  if (!removeBgImage) {
+    removeBgStatus.textContent = 'ابتدا یک عکس انتخاب کن.';
+    return;
+  }
+
+  if (typeof SelfieSegmentation === 'undefined') {
+    removeBgStatus.textContent = 'بارگذاری موتور هوش مصنوعی ناموفق بود.';
+    return;
+  }
+
+  removeBgButton.disabled = true;
+  removeBgDownload.hidden = true;
+  removeBgStatus.textContent = 'در حال حذف پس‌زمینه عکس...';
+
+  try {
+    if (!selfieSegmenter) {
+      selfieSegmenter = new SelfieSegmentation({
+        locateFile: file =>
+          `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
+      });
+
+      selfieSegmenter.setOptions({
+        modelSelection: 1
+      });
+
+      selfieSegmenter.onResults(createRemoveBgOutput);
+    }
+
+    await selfieSegmenter.send({
+      image: removeBgImage
+    });
+
+  } catch (error) {
+    removeBgStatus.textContent =
+      'پردازش عکس ناموفق بود. اتصال اینترنت را بررسی کن.';
+  } finally {
+    removeBgButton.disabled = false;
+  }
+});
+
+// دانلود عکس نهایی
+removeBgDownload.addEventListener('click', () => {
+  if (!removeBgBlob) return;
+
+  const url = URL.createObjectURL(removeBgBlob);
+  const link = document.createElement('a');
+
+  link.href = url;
+  link.download = removeBgColor.value === 'transparent'
+    ? 'karino-personal-transparent.png'
+    : 'karino-personal-photo.jpg';
+
+  link.click();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
   </script>
 </body>
 </html>
