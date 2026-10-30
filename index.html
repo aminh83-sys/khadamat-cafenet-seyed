@@ -218,7 +218,7 @@
   <div class="icon">✂️</div>
   <h3>برش عکس</h3>
   <p>عکس را انتخاب کن، نسبت برش را مشخص کن و خروجی دلخواه را دریافت کن.</p>
-
+<canvas id="crop-preview" style="display:none;width:100%;max-width:300px;height:auto;border:1px solid #ddd;border-radius:10px;margin:12px auto;"></canvas>
   <label for="crop-file">انتخاب عکس</label>
   <input type="file" id="crop-file" accept="image/jpeg,image/png,image/webp">
 
@@ -607,6 +607,157 @@
         button.disabled = false;
       }
     });
+
+// ابزار برش عکس کارینو
+let cropImage = null;
+let cropImageURL = null;
+
+const cropFile = document.getElementById('crop-file');
+const cropRatio = document.getElementById('crop-ratio');
+const cropX = document.getElementById('crop-x');
+const cropY = document.getElementById('crop-y');
+const cropQuality = document.getElementById('crop-quality');
+const cropButton = document.getElementById('crop-button');
+const cropStatus = document.getElementById('crop-status');
+const cropPreview = document.getElementById('crop-preview');
+const cropDownload = document.getElementById('crop-download');
+
+function getCropArea() {
+  const parts = cropRatio.value.split(':').map(Number);
+  const ratio = parts[0] / parts[1];
+
+  let width = cropImage.width;
+  let height = cropImage.height;
+
+  if (width / height > ratio) {
+    width = height * ratio;
+  } else {
+    height = width / ratio;
+  }
+
+  const maxX = cropImage.width - width;
+  const maxY = cropImage.height - height;
+
+  return {
+    x: maxX * Number(cropX.value) / 100,
+    y: maxY * Number(cropY.value) / 100,
+    width,
+    height,
+    ratio
+  };
+}
+
+function updateCropPreview() {
+  if (!cropImage) return;
+
+  const area = getCropArea();
+  const previewWidth = 300;
+  const previewHeight = Math.round(previewWidth / area.ratio);
+
+  cropPreview.width = previewWidth;
+  cropPreview.height = previewHeight;
+  cropPreview.style.display = 'block';
+
+  const ctx = cropPreview.getContext('2d');
+  ctx.clearRect(0, 0, previewWidth, previewHeight);
+
+  ctx.drawImage(
+    cropImage,
+    area.x, area.y, area.width, area.height,
+    0, 0, previewWidth, previewHeight
+  );
+}
+
+cropFile.addEventListener('change', () => {
+  cropStatus.textContent = '';
+  cropDownload.hidden = true;
+
+  if (cropImageURL) {
+    URL.revokeObjectURL(cropImageURL);
+    cropImageURL = null;
+  }
+
+  cropImage = null;
+  cropPreview.style.display = 'none';
+
+  const file = cropFile.files && cropFile.files[0];
+
+  if (!file) return;
+
+  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+    cropStatus.textContent = 'لطفاً عکس JPG، PNG یا WEBP انتخاب کن.';
+    return;
+  }
+
+  cropImageURL = URL.createObjectURL(file);
+  const image = new Image();
+
+  image.onload = () => {
+    cropImage = image;
+    updateCropPreview();
+    cropStatus.textContent = 'عکس آماده برش است. محدوده را تنظیم کن.';
+  };
+
+  image.onerror = () => {
+    cropStatus.textContent = 'خواندن عکس ناموفق بود.';
+  };
+
+  image.src = cropImageURL;
+});
+
+cropRatio.addEventListener('change', updateCropPreview);
+cropX.addEventListener('input', updateCropPreview);
+cropY.addEventListener('input', updateCropPreview);
+
+cropButton.addEventListener('click', () => {
+  if (!cropImage) {
+    cropStatus.textContent = 'لطفاً ابتدا یک عکس انتخاب کن.';
+    return;
+  }
+
+  cropButton.disabled = true;
+  cropStatus.textContent = 'در حال آماده‌سازی عکس...';
+  cropDownload.hidden = true;
+
+  try {
+    const area = getCropArea();
+    const outputWidth = area.ratio >= 1 ? 1200 : Math.round(1200 * area.ratio);
+    const outputHeight = area.ratio >= 1 ? Math.round(1200 / area.ratio) : 1200;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = outputWidth;
+    canvas.height = outputHeight;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Canvas unavailable');
+
+    ctx.drawImage(
+      cropImage,
+      area.x, area.y, area.width, area.height,
+      0, 0, outputWidth, outputHeight
+    );
+
+    canvas.toBlob(blob => {
+      if (!blob) {
+        cropStatus.textContent = 'ساخت عکس ناموفق بود.';
+        cropButton.disabled = false;
+        return;
+      }
+
+      const url = URL.createObjectURL(blob);
+      cropDownload.href = url;
+      cropDownload.download = 'karino-cropped.jpg';
+      cropDownload.hidden = false;
+
+      cropStatus.textContent = 'عکس برش‌خورده آماده دانلود است.';
+      cropButton.disabled = false;
+    }, 'image/jpeg', Number(cropQuality.value));
+
+  } catch (error) {
+    cropStatus.textContent = 'برش عکس انجام نشد. لطفاً دوباره تلاش کن.';
+    cropButton.disabled = false;
+  }
+});
 
   </script>
 </body>
