@@ -612,7 +612,30 @@
 // ابزار برش عکس کارینو
 let cropImage = null;
 let cropImageURL = null;
+// زاویه چرخش عکس
+let cropRotation = 0;
 
+const cropRotateLeft = document.getElementById('crop-rotate-left');
+const cropRotateRight = document.getElementById('crop-rotate-right');
+const cropRotateReset = document.getElementById('crop-rotate-reset');
+
+// چرخش به چپ
+cropRotateLeft.addEventListener('click', () => {
+  cropRotation = (cropRotation - 90 + 360) % 360;
+  updateCropPreview();
+});
+
+// چرخش به راست
+cropRotateRight.addEventListener('click', () => {
+  cropRotation = (cropRotation + 90) % 360;
+  updateCropPreview();
+});
+
+// بازنشانی چرخش
+cropRotateReset.addEventListener('click', () => {
+  cropRotation = 0;
+  updateCropPreview();
+});
 const cropFile = document.getElementById('crop-file');
 const cropRatio = document.getElementById('crop-ratio');
 const cropX = document.getElementById('crop-x');
