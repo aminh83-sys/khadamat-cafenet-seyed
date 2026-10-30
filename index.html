@@ -932,7 +932,12 @@ const removeBgZoom = document.getElementById('remove-bg-zoom');
 const removeBgX = document.getElementById('remove-bg-x');
 const removeBgY = document.getElementById('remove-bg-y');
 const removeBgReset = document.getElementById('remove-bg-reset');
+const removeBgEdge = document.getElementById('remove-bg-edge');
 
+// تغییر میزان نرمی لبه‌های عکس
+removeBgEdge.addEventListener('input', () => {
+  renderRemoveBgOutput();
+});
 // تغییر تنظیمات کادر عکس
 removeBgZoom.addEventListener('input', () => {
   renderRemoveBgOutput();
