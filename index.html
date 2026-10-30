@@ -319,6 +319,25 @@
   <button type="button" id="remove-bg-download" hidden>دانلود عکس نهایی</button>
 
 </article>
+
+<article class="tool" id="ocr-tool" data-keywords="تبدیل عکس به متن OCR استخراج متن فارسی انگلیسی تصویر اسناد مدارک نوشته عکس">
+  <div class="icon">📝</div>
+  <h3>تبدیل عکس به متن (OCR)</h3>
+  <p>متن فارسی و انگلیسی را از عکس و اسناد استخراج کن.</p>
+
+  <label for="ocr-file">انتخاب عکس</label>
+  <input type="file" id="ocr-file" accept="image/jpeg,image/png,image/webp">
+
+  <button type="button" id="ocr-button">استخراج متن از عکس</button>
+
+  <p class="status" id="ocr-status" aria-live="polite"></p>
+
+  <label for="ocr-result">متن استخراج‌شده</label>
+  <textarea id="ocr-result" rows="10" placeholder="متن استخراج‌شده اینجا نمایش داده می‌شود..." style="width:100%;"></textarea>
+
+  <button type="button" id="ocr-copy">کپی متن</button>
+</article>
+
 </section>
 
 
