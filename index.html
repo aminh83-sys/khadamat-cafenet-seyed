@@ -184,6 +184,34 @@
     <a id="compress-download" class="download-link" hidden>دریافت عکس کم‌حجم</a>
     <p class="small">خروجی JPEG است؛ عکس اصلی را تا بررسی نتیجه نگه دار.</p>
   </article>
+  
+  <article class="tool" id="photo-size-tool" data-keywords="عکس پرسنلی عکس سه در چهار ۳×۴ تغییر اندازه ابعاد عکس سایز عکس ثبت نام استخدام">
+    <div class="icon">🪪</div>
+    <h3>ساخت عکس پرسنلی ۳×۴</h3>
+    <p>عکس خود را با نسبت ۳ به ۴ و اندازه دلخواه آماده کن.</p>
+
+    <label for="photo-size-file">انتخاب عکس</label>
+    <input type="file" id="photo-size-file" accept="image/jpeg,image/png,image/webp">
+
+    <label for="photo-size-dimensions">اندازه خروجی</label>
+    <select id="photo-size-dimensions">
+      <option value="300x400">۳۰۰ × ۴۰۰ پیکسل</option>
+      <option value="600x800" selected>۶۰۰ × ۸۰۰ پیکسل</option>
+      <option value="900x1200">۹۰۰ × ۱۲۰۰ پیکسل</option>
+    </select>
+
+    <label for="photo-size-quality">کیفیت عکس</label>
+    <select id="photo-size-quality">
+      <option value="0.9">کیفیت بالا</option>
+      <option value="0.8" selected>کیفیت متوسط</option>
+      <option value="0.65">حجم کمتر</option>
+    </select>
+
+    <button type="button" id="photo-size-button">ساخت عکس ۳×۴</button>
+    <p class="status" id="photo-size-status" aria-live="polite"></p>
+    <a id="photo-size-download" class="download-link" hidden>دانلود عکس آماده</a>
+    <p class="small">عکس به‌صورت برش مرکزی با نسبت ۳ به ۴ آماده می‌شود. قبل از استفاده، کادر و چهره را بررسی کن.</p>
+  </article>
 </section>
 
 
