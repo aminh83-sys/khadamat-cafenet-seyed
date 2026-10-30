@@ -617,15 +617,18 @@ const cropFile = document.getElementById('crop-file');
 const cropRatio = document.getElementById('crop-ratio');
 const cropX = document.getElementById('crop-x');
 const cropY = document.getElementById('crop-y');
+const cropZoom = document.getElementById('crop-zoom');
 const cropQuality = document.getElementById('crop-quality');
 const cropButton = document.getElementById('crop-button');
 const cropStatus = document.getElementById('crop-status');
 const cropPreview = document.getElementById('crop-preview');
 const cropDownload = document.getElementById('crop-download');
 
+
 function getCropArea() {
   const parts = cropRatio.value.split(':').map(Number);
   const ratio = parts[0] / parts[1];
+  const zoom = Number(cropZoom.value) / 100;
 
   let width = cropImage.width;
   let height = cropImage.height;
@@ -635,6 +638,9 @@ function getCropArea() {
   } else {
     height = width / ratio;
   }
+
+  width = width / zoom;
+  height = height / zoom;
 
   const maxX = cropImage.width - width;
   const maxY = cropImage.height - height;
@@ -647,6 +653,7 @@ function getCropArea() {
     ratio
   };
 }
+
 
 function updateCropPreview() {
   if (!cropImage) return;
