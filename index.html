@@ -137,47 +137,55 @@
 
     <p id="empty" hidden>موردی پیدا نشد؛ عبارت دیگری را جست‌وجو کن.</p>
 
-    <h2 class="section-heading" id="free-tools">ابزارهای رایگان کارینو</h2>
-    <section class="tools-grid" aria-label="ابزارهای رایگان">
-      <article class="tool" id="age-tool" data-keywords="سن محاسبه سن تاریخ تولد سن یاب">
-        <div class="icon">🎂</div>
-        <h3>محاسبه‌گر سن</h3>
-        <p>تاریخ تولد میلادی را انتخاب کن تا سن محاسبه شود.</p>
-        <label for="birthdate">تاریخ تولد</label>
-        <input id="birthdate" type="date">
-        <button type="button" id="age-button">محاسبه سن</button>
-        <p class="status" id="age-result" aria-live="polite"></p>
-      </article>
+    
+<h2 class="section-heading" id="free-tools">🧰 ابزارهای رایگان کارینو</h2>
+<p>ابزار موردنظرت را انتخاب کن و به‌صورت آنلاین و رایگان استفاده کن.</p>
 
-      <article class="tool" id="image-pdf" data-keywords="عکس تصویر pdf پی دی اف تبدیل عکس مدارک اسکن">
-        <div class="icon">📄</div>
-        <h3>تبدیل عکس به PDF</h3>
-        <p>یک یا چند عکس انتخاب کن تا در یک فایل PDF قرار بگیرند.</p>
-        <label for="imageFiles">انتخاب عکس‌ها</label>
-        <input type="file" id="imageFiles" accept="image/jpeg,image/png,image/webp" multiple>
-        <button type="button" id="pdf-button">تبدیل و دریافت PDF</button>
-        <p class="status" id="pdf-status" aria-live="polite"></p>
-        <p class="small">برای ساخت PDF به اینترنت و بارگذاری کتابخانه نیاز است. عکس‌ها در مرورگر پردازش می‌شوند.</p>
-      </article>
+<h3 class="section-heading">🎂 محاسبه و اطلاعات فردی</h3>
+<section class="tools-grid" aria-label="ابزارهای محاسباتی">
+  <article class="tool" id="age-tool" data-keywords="سن محاسبه سن تاریخ تولد سن یاب">
+    <div class="icon">🎂</div>
+    <h3>محاسبه‌گر سن</h3>
+    <p>تاریخ تولد میلادی را انتخاب کن تا سن محاسبه شود.</p>
+    <label for="birthdate">تاریخ تولد</label>
+    <input id="birthdate" type="date">
+    <button type="button" id="age-button">محاسبه سن</button>
+    <p class="status" id="age-result" aria-live="polite"></p>
+  </article>
+</section>
 
-      <article class="tool" id="compress-tool" data-keywords="کاهش حجم عکس فشرده سازی کم کردن حجم تصویر عکس کم حجم">
-        <div class="icon">🗜️</div>
-        <h3>کاهش حجم عکس</h3>
-        <p>حجم عکس را برای بارگذاری در سامانه‌ها کاهش بده.</p>
-        <label for="compress-file">انتخاب عکس</label>
-        <input type="file" id="compress-file" accept="image/jpeg,image/png,image/webp">
-        <label for="compress-quality">کیفیت خروجی</label>
-        <select id="compress-quality">
-          <option value="0.9">کیفیت بالا</option>
-          <option value="0.7" selected>کیفیت متوسط</option>
-          <option value="0.5">حجم کمتر</option>
-        </select>
-        <button type="button" id="compress-button">کاهش حجم عکس</button>
-        <p class="status" id="compress-status" aria-live="polite"></p>
-        <a id="compress-download" class="download-link" hidden>دریافت عکس کم‌حجم</a>
-        <p class="small">خروجی JPEG است؛ عکس اصلی را تا بررسی نتیجه نگه دار.</p>
-      </article>
-    </section>
+<h3 class="section-heading">📁 مدیریت عکس و فایل</h3>
+<section class="tools-grid" aria-label="ابزارهای عکس و فایل">
+  <article class="tool" id="image-pdf" data-keywords="عکس تصویر pdf پی دی اف تبدیل عکس مدارک اسکن">
+    <div class="icon">📄</div>
+    <h3>تبدیل عکس به PDF</h3>
+    <p>یک یا چند عکس انتخاب کن تا در یک فایل PDF قرار بگیرند.</p>
+    <label for="imageFiles">انتخاب عکس‌ها</label>
+    <input type="file" id="imageFiles" accept="image/jpeg,image/png,image/webp" multiple>
+    <button type="button" id="pdf-button">تبدیل و دریافت PDF</button>
+    <p class="status" id="pdf-status" aria-live="polite"></p>
+    <p class="small">برای ساخت PDF به اینترنت و بارگذاری کتابخانه نیاز است. عکس‌ها در مرورگر پردازش می‌شوند.</p>
+  </article>
+
+  <article class="tool" id="compress-tool" data-keywords="کاهش حجم عکس فشرده سازی کم کردن حجم تصویر عکس کم حجم">
+    <div class="icon">🗜️</div>
+    <h3>کاهش حجم عکس</h3>
+    <p>حجم عکس را برای بارگذاری در سامانه‌ها کاهش بده.</p>
+    <label for="compress-file">انتخاب عکس</label>
+    <input type="file" id="compress-file" accept="image/jpeg,image/png,image/webp">
+    <label for="compress-quality">کیفیت خروجی</label>
+    <select id="compress-quality">
+      <option value="0.9">کیفیت بالا</option>
+      <option value="0.7" selected>کیفیت متوسط</option>
+      <option value="0.5">حجم کمتر</option>
+    </select>
+    <button type="button" id="compress-button">کاهش حجم عکس</button>
+    <p class="status" id="compress-status" aria-live="polite"></p>
+    <a id="compress-download" class="download-link" hidden>دریافت عکس کم‌حجم</a>
+    <p class="small">خروجی JPEG است؛ عکس اصلی را تا بررسی نتیجه نگه دار.</p>
+  </article>
+</section>
+
 
     <div class="notice">
       <strong>حریم خصوصی:</strong>
