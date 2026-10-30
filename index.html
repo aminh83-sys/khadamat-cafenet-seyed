@@ -716,7 +716,7 @@ cropFile.addEventListener('change', () => {
 cropRatio.addEventListener('change', updateCropPreview);
 cropX.addEventListener('input', updateCropPreview);
 cropY.addEventListener('input', updateCropPreview);
-
+cropZoom.addEventListener('input', updateCropPreview);
 cropButton.addEventListener('click', () => {
   if (!cropImage) {
     cropStatus.textContent = 'لطفاً ابتدا یک عکس انتخاب کن.';
