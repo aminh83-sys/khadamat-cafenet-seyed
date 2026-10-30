@@ -1004,8 +1004,31 @@ function createRemoveBgOutput(results) {
   const foregroundCtx = foreground.getContext('2d');
   foregroundCtx.drawImage(image, 0, 0, width, height);
 
-  foregroundCtx.globalCompositeOperation = 'destination-in';
-  foregroundCtx.drawImage(results.segmentationMask, 0, 0, width, height);
+  // دریافت ماسک جداسازی سوژه
+const maskCanvas = document.createElement('canvas');
+maskCanvas.width = width;
+maskCanvas.height = height;
+
+const maskCtx = maskCanvas.getContext('2d');
+maskCtx.drawImage(results.segmentationMask, 0, 0, width, height);
+
+// اعمال نرمی لبه‌ها
+const edgeValue = Number(removeBgEdge.value);
+maskCtx.filter = edgeValue > 0
+  ? `blur(${edgeValue}px)`
+  : 'none';
+
+const smoothMask = document.createElement('canvas');
+smoothMask.width = width;
+smoothMask.height = height;
+
+const smoothCtx = smoothMask.getContext('2d');
+smoothCtx.filter = maskCtx.filter;
+smoothCtx.drawImage(maskCanvas, 0, 0);
+
+// ترکیب ماسک با تصویر اصلی
+foregroundCtx.globalCompositeOperation = 'destination-in';
+foregroundCtx.drawImage(smoothMask, 0, 0, width, height);
 
   removeBgForeground = foreground;
 
