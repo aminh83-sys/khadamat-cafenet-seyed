@@ -758,6 +758,11 @@ cropFile.addEventListener('change', () => {
     return;
   }
 
+  // بازنشانی زاویه برای عکس جدید
+cropRotation = 0;
+
+// بارگذاری عکس با اصلاح خودکار جهت EXIF
+const loadFallbackImage = () => {
   cropImageURL = URL.createObjectURL(file);
   const image = new Image();
 
@@ -769,6 +774,26 @@ cropFile.addEventListener('change', () => {
 
   image.onerror = () => {
     cropStatus.textContent = 'خواندن عکس ناموفق بود.';
+  };
+
+  image.src = cropImageURL;
+};
+
+if (typeof createImageBitmap === 'function') {
+  createImageBitmap(file, {
+    imageOrientation: 'from-image'
+  })
+    .then(bitmap => {
+      cropImage = bitmap;
+      updateCropPreview();
+      cropStatus.textContent = 'جهت عکس به‌صورت خودکار تنظیم شد.';
+    })
+    .catch(() => {
+      loadFallbackImage();
+    });
+} else {
+  loadFallbackImage();
+}
   };
 
   image.src = cropImageURL;
