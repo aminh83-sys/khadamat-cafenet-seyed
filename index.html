@@ -1211,7 +1211,82 @@ removeBgDownload.addEventListener('click', () => {
 
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
+// ابزار تبدیل عکس به متن OCR
+const ocrFile = document.getElementById('ocr-file');
+const ocrButton = document.getElementById('ocr-button');
+const ocrStatus = document.getElementById('ocr-status');
+const ocrResult = document.getElementById('ocr-result');
+const ocrCopy = document.getElementById('ocr-copy');
 
+let ocrWorker = null;
+
+ocrButton.addEventListener('click', async () => {
+  const file = ocrFile.files[0];
+
+  if (!file) {
+    ocrStatus.textContent = 'لطفاً ابتدا یک عکس انتخاب کن.';
+    return;
+  }
+
+  if (!window.Tesseract) {
+    ocrStatus.textContent = 'کتابخانه تشخیص متن بارگذاری نشده است.';
+    return;
+  }
+
+  ocrButton.disabled = true;
+  ocrResult.value = '';
+  ocrStatus.textContent = 'در حال آماده‌سازی موتور تشخیص متن...';
+
+  try {
+    if (!ocrWorker) {
+      ocrWorker = await Tesseract.createWorker('fas+eng', 1, {
+        logger: message => {
+          if (message.status === 'recognizing text') {
+            const percent = Math.round(message.progress * 100);
+            ocrStatus.textContent = `در حال استخراج متن: ${percent}٪`;
+          }
+        }
+      });
+    }
+
+    ocrStatus.textContent = 'در حال خواندن متن عکس...';
+
+    const result = await ocrWorker.recognize(file);
+    const extractedText = result.data.text.trim();
+
+    if (!extractedText) {
+      ocrStatus.textContent = 'متنی در این عکس شناسایی نشد.';
+    } else {
+      ocrResult.value = extractedText;
+      ocrStatus.textContent = 'متن با موفقیت استخراج شد.';
+    }
+
+  } catch (error) {
+    console.error('OCR Error:', error);
+    ocrStatus.textContent = 'استخراج متن ناموفق بود. دوباره تلاش کن.';
+  } finally {
+    ocrButton.disabled = false;
+  }
+});
+
+ocrCopy.addEventListener('click', async () => {
+  if (!ocrResult.value.trim()) {
+    ocrStatus.textContent = 'ابتدا متنی استخراج کن.';
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(ocrResult.value);
+    ocrStatus.textContent = 'متن با موفقیت کپی شد.';
+  } catch (error) {
+    ocrStatus.textContent = 'کپی خودکار انجام نشد؛ متن را دستی انتخاب کن.';
+  }
+});
+
+ocrFile.addEventListener('change', () => {
+  ocrResult.value = '';
+  ocrStatus.textContent = '';
+});
   </script>
 </body>
 </html>
