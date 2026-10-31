@@ -1242,14 +1242,13 @@ removeBgDownload.addEventListener('click', () => {
 });
     // بهینه‌سازی تصویر برای افزایش دقت OCR
 // بهینه‌سازی تصویر برای تشخیص بهتر متن فارسی و انگلیسی
-function improveOCRImage(sourceCanvas, mode = 'printed') {  const canvas = document.createElement('canvas');
+function improveOCRImage(sourceCanvas, mode = 'printed') {  
+  const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d', {
     willReadFrequently: true
   });
 
-  const scale = Math.max(
-    const scale = mode === 'form' ? 3 : 2.5;
-  );
+  const scale = mode === 'form' ? 3 : 2.5;
 
   canvas.width = Math.round(sourceCanvas.width * scale);
   canvas.height = Math.round(sourceCanvas.height * scale);
