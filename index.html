@@ -1233,6 +1233,56 @@ removeBgDownload.addEventListener('click', () => {
 
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
+    // بهینه‌سازی تصویر برای افزایش دقت OCR
+function improveOCRImage(sourceCanvas) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  const scale = 2;
+
+  canvas.width = sourceCanvas.width * scale;
+  canvas.height = sourceCanvas.height * scale;
+
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+
+  ctx.drawImage(
+    sourceCanvas,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  const imageData = ctx.getImageData(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  const pixels = imageData.data;
+
+  for (let i = 0; i < pixels.length; i += 4) {
+    const gray =
+      0.299 * pixels[i] +
+      0.587 * pixels[i + 1] +
+      0.114 * pixels[i + 2];
+
+    const contrast = 1.35;
+    let value = contrast * (gray - 128) + 128;
+
+    value = value > 165 ? 255 : value < 165 ? 0 : 255;
+
+    pixels[i] = value;
+    pixels[i + 1] = value;
+    pixels[i + 2] = value;
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+
+  return canvas;
+}
 // ابزار تبدیل عکس به متن OCR
 const ocrFile = document.getElementById('ocr-file');
 const ocrButton = document.getElementById('ocr-button');
