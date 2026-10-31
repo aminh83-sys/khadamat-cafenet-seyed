@@ -348,7 +348,19 @@
   <option value="mixed">متن ترکیبی فارسی، انگلیسی و عدد</option>
 </select>
   <button type="button" id="ocr-button">استخراج متن از عکس</button>
+<button type="button" id="ocr-compare-button">
+  مقایسه دو روش تشخیص متن
+</button>
 
+<div id="ocr-compare-results" hidden>
+  <h4>نتیجه روش اول: تشخیص معمولی</h4>
+  <textarea id="ocr-result-normal" rows="8" dir="rtl"
+    style="width:100%;text-align:right;"></textarea>
+
+  <h4>نتیجه روش دوم: تشخیص فرم اداری</h4>
+  <textarea id="ocr-result-form" rows="8" dir="rtl"
+    style="width:100%;text-align:right;"></textarea>
+</div>
   <p class="status" id="ocr-status" aria-live="polite"></p>
 
   <label for="ocr-result">متن استخراج‌شده</label>
@@ -1312,6 +1324,10 @@ let ocrWorker = null;
     let ocrCurrentLanguage = null;
 const ocrLanguage = document.getElementById('ocr-language');
     const ocrMode = document.getElementById('ocr-mode');
+    const ocrCompareButton = document.getElementById('ocr-compare-button');
+const ocrCompareResults = document.getElementById('ocr-compare-results');
+const ocrResultNormal = document.getElementById('ocr-result-normal');
+const ocrResultForm = document.getElementById('ocr-result-form');
 ocrButton.addEventListener('click', async () => {
   const file = ocrFile.files[0];
 if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
