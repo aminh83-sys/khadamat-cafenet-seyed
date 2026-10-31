@@ -332,8 +332,7 @@
   <p>متن فارسی و انگلیسی را از عکس و اسناد استخراج کن.</p>
 
   <label for="ocr-file">انتخاب عکس</label>
-  <input type="file" id="ocr-file" accept="image/jpeg,image/png,image/webp">
-
+<input type="file" id="ocr-file" accept="image/jpeg,image/png,image/webp,application/pdf">
   <button type="button" id="ocr-button">استخراج متن از عکس</button>
 
   <p class="status" id="ocr-status" aria-live="polite"></p>
@@ -1264,9 +1263,60 @@ ocrButton.addEventListener('click', async () => {
 
     ocrStatus.textContent = 'در حال خواندن متن عکس...';
 
-    const result = await ocrWorker.recognize(file);
-    const extractedText = result.data.text.trim();
+    let extractedText = '';
 
+if (file.type === 'application/pdf') {
+
+  if (!window.pdfjsLib) {
+    throw new Error('PDF.js بارگذاری نشده است.');
+  }
+
+  ocrStatus.textContent = 'در حال باز کردن فایل PDF...';
+
+  const pdfData = await file.arrayBuffer();
+
+  const pdf = await pdfjsLib.getDocument({
+    data: pdfData
+  }).promise;
+
+  const pdfCanvas = document.createElement('canvas');
+  const pdfContext = pdfCanvas.getContext('2d');
+
+  for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+
+    ocrStatus.textContent =
+      `در حال پردازش صفحه ${pageNumber} از ${pdf.numPages}...`;
+
+    const page = await pdf.getPage(pageNumber);
+
+    const viewport = page.getViewport({
+      scale: 2
+    });
+
+    pdfCanvas.width = viewport.width;
+    pdfCanvas.height = viewport.height;
+
+    await page.render({
+      canvasContext: pdfContext,
+      viewport: viewport
+    }).promise;
+
+    const pageResult = await ocrWorker.recognize(pdfCanvas);
+
+    extractedText +=
+      `\n\n--- صفحه ${pageNumber} ---\n\n` +
+      pageResult.data.text.trim();
+  }
+
+  pdfCanvas.width = 0;
+  pdfCanvas.height = 0;
+
+} else {
+
+  const result = await ocrWorker.recognize(file);
+  extractedText = result.data.text.trim();
+
+}
     if (!extractedText) {
       ocrStatus.textContent = 'متنی در این عکس شناسایی نشد.';
     } else {
