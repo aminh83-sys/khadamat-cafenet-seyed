@@ -1270,10 +1270,11 @@ ocrButton.addEventListener('click', async () => {
 
   ocrWorker = await Tesseract.createWorker(ocrLanguage.value, 1, {
         logger: message => {
-          if (message.status === 'recognizing text') {
-            const percent = Math.round(message.progress * 100);
-            ocrStatus.textContent = `در حال استخراج متن: ${percent}٪`;
-          }
+  const percent = Math.round((message.progress || 0) * 100);
+
+  ocrStatus.textContent =
+    `${message.status} - ${percent}٪`;
+}
         }
       });
             ocrCurrentLanguage = ocrLanguage.value;
