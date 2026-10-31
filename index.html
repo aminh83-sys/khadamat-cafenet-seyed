@@ -1232,7 +1232,7 @@ const ocrButton = document.getElementById('ocr-button');
 const ocrStatus = document.getElementById('ocr-status');
 const ocrResult = document.getElementById('ocr-result');
 const ocrCopy = document.getElementById('ocr-copy');
-
+const ocrDownload = document.getElementById('ocr-download');
 let ocrWorker = null;
 
 ocrButton.addEventListener('click', async () => {
@@ -1348,7 +1348,31 @@ ocrCopy.addEventListener('click', async () => {
     ocrStatus.textContent = 'کپی خودکار انجام نشد؛ متن را دستی انتخاب کن.';
   }
 });
+ocrDownload.addEventListener('click', () => {
+  if (!ocrResult.value.trim()) {
+    ocrStatus.textContent = 'ابتدا متنی استخراج کن.';
+    return;
+  }
 
+  const blob = new Blob(
+    ['\uFEFF' + ocrResult.value],
+    { type: 'text/plain;charset=utf-8' }
+  );
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+
+  link.href = url;
+  link.download = 'karino-ocr-text.txt';
+
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  URL.revokeObjectURL(url);
+
+  ocrStatus.textContent = 'فایل متنی دانلود شد.';
+});
 ocrFile.addEventListener('change', () => {
   ocrResult.value = '';
   ocrStatus.textContent = '';
