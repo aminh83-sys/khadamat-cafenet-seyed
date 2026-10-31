@@ -333,6 +333,13 @@
 
   <label for="ocr-file">انتخاب عکس</label>
 <input type="file" id="ocr-file" accept="image/jpeg,image/png,image/webp,application/pdf">
+  <label for="ocr-language">زبان تشخیص متن</label>
+
+<select id="ocr-language">
+  <option value="fas" selected>فارسی</option>
+  <option value="eng">انگلیسی</option>
+  <option value="fas+eng">فارسی و انگلیسی</option>
+</select>
   <button type="button" id="ocr-button">استخراج متن از عکس</button>
 
   <p class="status" id="ocr-status" aria-live="polite"></p>
