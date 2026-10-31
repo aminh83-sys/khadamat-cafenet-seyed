@@ -1312,6 +1312,7 @@ const ocrDownload = document.getElementById('ocr-download');
 let ocrWorker = null;
     let ocrCurrentLanguage = null;
 const ocrLanguage = document.getElementById('ocr-language');
+    const ocrMode = document.getElementById('ocr-mode');
 ocrButton.addEventListener('click', async () => {
   const file = ocrFile.files[0];
 
@@ -1389,8 +1390,10 @@ if (file.type === 'application/pdf') {
       viewport: viewport
     }).promise;
 
-    const improvedCanvas = improveOCRImage(pdfCanvas);
-
+const improvedCanvas = improveOCRImage(
+  pdfCanvas,
+  ocrMode.value
+);
 const pageResult = await ocrWorker.recognize(improvedCanvas);
 
     extractedText +=
@@ -1418,8 +1421,10 @@ const pageResult = await ocrWorker.recognize(improvedCanvas);
     image.height
   );
 
-  const improvedCanvas = improveOCRImage(sourceCanvas);
-
+const improvedCanvas = improveOCRImage(
+  sourceCanvas,
+  ocrMode.value
+);
   const result = await ocrWorker.recognize(improvedCanvas);
 
   extractedText = result.data.text.trim();
