@@ -340,6 +340,13 @@
   <option value="eng">انگلیسی</option>
   <option value="fas+eng">فارسی و انگلیسی</option>
 </select>
+  <label for="ocr-mode">نوع سند برای تشخیص متن</label>
+
+<select id="ocr-mode">
+  <option value="printed" selected>متن فارسی چاپی (کتاب و جزوه)</option>
+  <option value="form">فرم اداری و دانشگاهی</option>
+  <option value="mixed">متن ترکیبی فارسی، انگلیسی و عدد</option>
+</select>
   <button type="button" id="ocr-button">استخراج متن از عکس</button>
 
   <p class="status" id="ocr-status" aria-live="polite"></p>
@@ -1235,15 +1242,13 @@ removeBgDownload.addEventListener('click', () => {
 });
     // بهینه‌سازی تصویر برای افزایش دقت OCR
 // بهینه‌سازی تصویر برای تشخیص بهتر متن فارسی و انگلیسی
-function improveOCRImage(sourceCanvas) {
-  const canvas = document.createElement('canvas');
+function improveOCRImage(sourceCanvas, mode = 'printed') {  const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d', {
     willReadFrequently: true
   });
 
   const scale = Math.max(
-    2,
-    Math.min(3, 2400 / Math.max(sourceCanvas.width, sourceCanvas.height))
+    const scale = mode === 'form' ? 3 : 2.5;
   );
 
   canvas.width = Math.round(sourceCanvas.width * scale);
@@ -1252,8 +1257,17 @@ function improveOCRImage(sourceCanvas) {
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-  ctx.filter = 'grayscale(1) contrast(1.25)';
-  ctx.drawImage(
+let contrast = 1.25;
+
+if (mode === 'printed') {
+  contrast = 1.20;
+} else if (mode === 'form') {
+  contrast = 1.40;
+} else if (mode === 'mixed') {
+  contrast = 1.15;
+}
+
+ctx.filter = `grayscale(1) contrast(${contrast})`;  ctx.drawImage(
     sourceCanvas,
     0,
     0,
