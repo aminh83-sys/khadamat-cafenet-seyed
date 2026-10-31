@@ -1353,7 +1353,7 @@ ocrCurrentLanguage = ocrLanguage.value;
     }
 // تنظیم هوشمند نحوه تشخیص متن
 await ocrWorker.setParameters({
-  tessedit_pageseg_mode: ocrMode.value === 'form' ? '11' : '6',
+  tessedit_pageseg_mode: ocrMode.value === 'form' ? '4' : '6',
   preserve_interword_spaces: '1'
 });
     ocrStatus.textContent = 'در حال خواندن متن عکس...';
