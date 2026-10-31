@@ -1381,10 +1381,29 @@ if (file.type === 'application/pdf') {
   pdfCanvas.height = 0;
 
 } else {
+  const image = await createImageBitmap(file);
 
-  const result = await ocrWorker.recognize(file);
+  const sourceCanvas = document.createElement('canvas');
+  const sourceContext = sourceCanvas.getContext('2d');
+
+  sourceCanvas.width = image.width;
+  sourceCanvas.height = image.height;
+
+  sourceContext.drawImage(
+    image,
+    0,
+    0,
+    image.width,
+    image.height
+  );
+
+  const improvedCanvas = improveOCRImage(sourceCanvas);
+
+  const result = await ocrWorker.recognize(improvedCanvas);
+
   extractedText = result.data.text.trim();
 
+  image.close();
 }
     if (!extractedText) {
       ocrStatus.textContent = 'متنی در این عکس شناسایی نشد.';
