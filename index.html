@@ -1330,14 +1330,16 @@ const ocrResultNormal = document.getElementById('ocr-result-normal');
 const ocrResultForm = document.getElementById('ocr-result-form');
 ocrButton.addEventListener('click', async () => {
   const file = ocrFile.files[0];
+
+if (!file) {
+  ocrStatus.textContent = 'لطفاً ابتدا یک عکس یا فایل PDF انتخاب کن.';
+  return;
+}
+
 if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
   ocrStatus.textContent = 'فرمت فایل انتخاب‌شده پشتیبانی نمی‌شود.';
   return;
 }
-  if (!file) {
-    ocrStatus.textContent = 'لطفاً ابتدا یک عکس انتخاب کن.';
-    return;
-  }
 
   if (!window.Tesseract) {
     ocrStatus.textContent = 'کتابخانه تشخیص متن بارگذاری نشده است.';
@@ -1467,7 +1469,192 @@ const improvedCanvas = improveOCRImage(
     ocrButton.disabled = false;
   }
 });
+// موتور مقایسه دو روش تشخیص متن
+ocrCompareButton.addEventListener('click', async () => {
+  const file = ocrFile.files[0];
 
+  if (!file) {
+    ocrStatus.textContent = 'ابتدا یک عکس یا PDF انتخاب کن.';
+    return;
+  }
+
+  if (!file.type.startsWith('image/') &&
+      file.type !== 'application/pdf') {
+    ocrStatus.textContent = 'فرمت فایل پشتیبانی نمی‌شود.';
+    return;
+  }
+
+  if (!window.Tesseract) {
+    ocrStatus.textContent = 'کتابخانه OCR بارگذاری نشده است.';
+    return;
+  }
+
+  ocrCompareButton.disabled = true;
+  ocrCompareResults.hidden = false;
+  ocrResultNormal.value = '';
+  ocrResultForm.value = '';
+
+  try {
+    if (!ocrWorker ||
+        ocrCurrentLanguage !== ocrLanguage.value) {
+
+      if (ocrWorker) {
+        await ocrWorker.terminate();
+        ocrWorker = null;
+      }
+
+      ocrStatus.textContent = 'در حال آماده‌سازی موتور OCR...';
+
+      ocrWorker = await Tesseract.createWorker(
+        ocrLanguage.value,
+        1,
+        {
+          logger: message => {
+            const percent = Math.round(
+              (message.progress || 0) * 100
+            );
+
+            ocrStatus.textContent =
+              `${message.status} - ${percent}٪`;
+          }
+        }
+      );
+
+      ocrCurrentLanguage = ocrLanguage.value;
+    }
+
+    async function runComparison(pageMode, methodName) {
+      await ocrWorker.setParameters({
+        tessedit_pageseg_mode: String(pageMode),
+        preserve_interword_spaces: '1'
+      });
+
+      let text = '';
+
+      if (file.type === 'application/pdf') {
+        if (!window.pdfjsLib) {
+          throw new Error('PDF.js بارگذاری نشده است.');
+        }
+
+        const pdfData = await file.arrayBuffer();
+
+        const pdf = await pdfjsLib.getDocument({
+          data: pdfData
+        }).promise;
+
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+
+        for (
+          let pageNumber = 1;
+          pageNumber <= pdf.numPages;
+          pageNumber++
+        ) {
+          ocrStatus.textContent =
+            `${methodName}: پردازش صفحه ${pageNumber} از ${pdf.numPages}`;
+
+          const page = await pdf.getPage(pageNumber);
+
+          const viewport = page.getViewport({
+            scale: 2
+          });
+
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          await page.render({
+            canvasContext: context,
+            viewport: viewport
+          }).promise;
+
+          const improvedCanvas = improveOCRImage(
+            canvas,
+            ocrMode.value
+          );
+
+          const result = await ocrWorker.recognize(
+            improvedCanvas
+          );
+
+          text +=
+            `\n\n--- صفحه ${pageNumber} ---\n\n` +
+            result.data.text.trim();
+        }
+
+        canvas.width = 0;
+        canvas.height = 0;
+
+      } else {
+        ocrStatus.textContent =
+          `در حال اجرای ${methodName}...`;
+
+        const image = await createImageBitmap(file);
+
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+
+        canvas.width = image.width;
+        canvas.height = image.height;
+
+        context.drawImage(
+          image,
+          0,
+          0,
+          image.width,
+          image.height
+        );
+
+        const improvedCanvas = improveOCRImage(
+          canvas,
+          ocrMode.value
+        );
+
+        const result = await ocrWorker.recognize(
+          improvedCanvas
+        );
+
+        text = result.data.text.trim();
+
+        image.close();
+
+        canvas.width = 0;
+        canvas.height = 0;
+      }
+
+      return text.trim();
+    }
+
+    ocrResultNormal.value = await runComparison(
+      6,
+      'روش استاندارد'
+    );
+
+    ocrResultForm.value = await runComparison(
+      11,
+      'روش متن پراکنده'
+    );
+
+    if (
+      !ocrResultNormal.value &&
+      !ocrResultForm.value
+    ) {
+      ocrStatus.textContent =
+        'متنی در فایل شناسایی نشد.';
+    } else {
+      ocrStatus.textContent =
+        'مقایسه دو روش با موفقیت انجام شد.';
+    }
+
+  } catch (error) {
+    console.error('OCR Compare Error:', error);
+
+    ocrStatus.textContent =
+      'مقایسه ناموفق بود. دوباره تلاش کن.';
+
+  } finally {
+    ocrCompareButton.disabled = false;
+  }
+});
 ocrCopy.addEventListener('click', async () => {
   if (!ocrResult.value.trim()) {
     ocrStatus.textContent = 'ابتدا متنی استخراج کن.';
