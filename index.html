@@ -1234,18 +1234,25 @@ removeBgDownload.addEventListener('click', () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
     // بهینه‌سازی تصویر برای افزایش دقت OCR
+// بهینه‌سازی تصویر برای تشخیص بهتر متن فارسی و انگلیسی
 function improveOCRImage(sourceCanvas) {
   const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', {
+    willReadFrequently: true
+  });
 
-  const scale = 2;
+  const scale = Math.max(
+    2,
+    Math.min(3, 2400 / Math.max(sourceCanvas.width, sourceCanvas.height))
+  );
 
-  canvas.width = sourceCanvas.width * scale;
-  canvas.height = sourceCanvas.height * scale;
+  canvas.width = Math.round(sourceCanvas.width * scale);
+  canvas.height = Math.round(sourceCanvas.height * scale);
 
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
+  ctx.filter = 'grayscale(1) contrast(1.25)';
   ctx.drawImage(
     sourceCanvas,
     0,
@@ -1253,6 +1260,7 @@ function improveOCRImage(sourceCanvas) {
     canvas.width,
     canvas.height
   );
+  ctx.filter = 'none';
 
   const imageData = ctx.getImageData(
     0,
@@ -1264,15 +1272,12 @@ function improveOCRImage(sourceCanvas) {
   const pixels = imageData.data;
 
   for (let i = 0; i < pixels.length; i += 4) {
-    const gray =
-      0.299 * pixels[i] +
-      0.587 * pixels[i + 1] +
-      0.114 * pixels[i + 2];
+    let value = pixels[i];
 
-    const contrast = 1.35;
-    let value = contrast * (gray - 128) + 128;
-
-    value = value > 165 ? 255 : value < 165 ? 0 : 255;
+    value = Math.max(
+      0,
+      Math.min(255, (value - 128) * 1.15 + 128)
+    );
 
     pixels[i] = value;
     pixels[i + 1] = value;
