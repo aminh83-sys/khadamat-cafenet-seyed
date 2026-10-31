@@ -1314,7 +1314,10 @@ const ocrLanguage = document.getElementById('ocr-language');
     const ocrMode = document.getElementById('ocr-mode');
 ocrButton.addEventListener('click', async () => {
   const file = ocrFile.files[0];
-
+if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
+  ocrStatus.textContent = 'فرمت فایل انتخاب‌شده پشتیبانی نمی‌شود.';
+  return;
+}
   if (!file) {
     ocrStatus.textContent = 'لطفاً ابتدا یک عکس انتخاب کن.';
     return;
@@ -1348,7 +1351,11 @@ ocrButton.addEventListener('click', async () => {
 
 ocrCurrentLanguage = ocrLanguage.value;
     }
-
+// تنظیم هوشمند نحوه تشخیص متن
+await ocrWorker.setParameters({
+  tessedit_pageseg_mode: ocrMode.value === 'form' ? '11' : '6',
+  preserve_interword_spaces: '1'
+});
     ocrStatus.textContent = 'در حال خواندن متن عکس...';
 
     let extractedText = '';
