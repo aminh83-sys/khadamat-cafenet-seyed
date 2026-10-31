@@ -1241,7 +1241,7 @@ const ocrResult = document.getElementById('ocr-result');
 const ocrCopy = document.getElementById('ocr-copy');
 const ocrDownload = document.getElementById('ocr-download');
 let ocrWorker = null;
-
+const ocrLanguage = document.getElementById('ocr-language');
 ocrButton.addEventListener('click', async () => {
   const file = ocrFile.files[0];
 
@@ -1261,7 +1261,7 @@ ocrButton.addEventListener('click', async () => {
 
   try {
     if (!ocrWorker) {
-      ocrWorker = await Tesseract.createWorker('fas+eng', 1, {
+      ocrWorker = await Tesseract.createWorker(ocrLanguage.value, 1, {
         logger: message => {
           if (message.status === 'recognizing text') {
             const percent = Math.round(message.progress * 100);
