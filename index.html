@@ -1268,16 +1268,16 @@ ocrButton.addEventListener('click', async () => {
     ocrWorker = null;
   }
 
-  ocrWorker = await Tesseract.createWorker(ocrLanguage.value, 1, {
-        logger: message => {
-  const percent = Math.round((message.progress || 0) * 100);
+ ocrWorker = await Tesseract.createWorker(ocrLanguage.value, 1, {
+  logger: message => {
+    const percent = Math.round((message.progress || 0) * 100);
 
-  ocrStatus.textContent =
-    `${message.status} - ${percent}٪`;
-}
-        }
-      });
-            ocrCurrentLanguage = ocrLanguage.value;
+    ocrStatus.textContent =
+      `${message.status} - ${percent}٪`;
+  }
+});
+
+ocrCurrentLanguage = ocrLanguage.value;
     }
 
     ocrStatus.textContent = 'در حال خواندن متن عکس...';
