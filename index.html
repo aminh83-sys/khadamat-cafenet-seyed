@@ -1546,7 +1546,7 @@ const improvedCanvas = improveOCRImage(
     if (!extractedText) {
       ocrStatus.textContent = 'متنی در این عکس شناسایی نشد.';
     } else {
-      ocrResult.value = extractedText;
+      ocrResult.value = cleanOCRText(extractedText);
       ocrStatus.textContent = 'متن با موفقیت استخراج شد.';
     }
 
