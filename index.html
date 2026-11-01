@@ -361,6 +361,31 @@
   <textarea id="ocr-result-form" rows="8" dir="rtl"
     style="width:100%;text-align:right;"></textarea>
 </div>
+  <button type="button" id="ocr-multi-button">
+  آزمایش سه روش بهینه‌سازی تصویر
+</button>
+
+<div id="ocr-multi-results" hidden>
+
+  <h4>روش اول: تصویر با کنتراست معمولی</h4>
+  <textarea id="ocr-multi-normal"
+    rows="8" dir="rtl"
+    style="width:100%;text-align:right;"
+    placeholder="نتیجه روش اول..."></textarea>
+
+  <h4>روش دوم: تصویر با وضوح بیشتر</h4>
+  <textarea id="ocr-multi-sharp"
+    rows="8" dir="rtl"
+    style="width:100%;text-align:right;"
+    placeholder="نتیجه روش دوم..."></textarea>
+
+  <h4>روش سوم: تصویر با کاهش نویز</h4>
+  <textarea id="ocr-multi-denoise"
+    rows="8" dir="rtl"
+    style="width:100%;text-align:right;"
+    placeholder="نتیجه روش سوم..."></textarea>
+
+</div>
   <p class="status" id="ocr-status" aria-live="polite"></p>
 
   <label for="ocr-result">متن استخراج‌شده</label>
@@ -1255,6 +1280,46 @@ removeBgDownload.addEventListener('click', () => {
     // بهینه‌سازی تصویر برای افزایش دقت OCR
 // بهینه‌سازی تصویر برای تشخیص بهتر متن فارسی و انگلیسی
 function improveOCRImage(sourceCanvas, mode = 'printed') {  
+  // ساخت سه نسخه بهینه‌شده برای مقایسه OCR
+function createOCRVariants(sourceCanvas) {
+
+  function makeVariant(filter) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d', {
+      willReadFrequently: true
+    });
+
+    const scale = 2.5;
+
+    canvas.width = Math.round(sourceCanvas.width * scale);
+    canvas.height = Math.round(sourceCanvas.height * scale);
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    ctx.filter = filter;
+
+    ctx.drawImage(
+      sourceCanvas,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    ctx.filter = 'none';
+
+    return canvas;
+  }
+
+  return {
+    normal: makeVariant('grayscale(1) contrast(1.15)'),
+
+    sharp: makeVariant('grayscale(1) contrast(1.4)'),
+
+    denoise: makeVariant('grayscale(1) contrast(1.1) blur(0.3px)')
+  };
+}
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d', {
     willReadFrequently: true
@@ -1328,6 +1393,13 @@ const ocrLanguage = document.getElementById('ocr-language');
 const ocrCompareResults = document.getElementById('ocr-compare-results');
 const ocrResultNormal = document.getElementById('ocr-result-normal');
 const ocrResultForm = document.getElementById('ocr-result-form');
+    // عناصر آزمایش سه روش بهینه‌سازی
+const ocrMultiButton = document.getElementById('ocr-multi-button');
+const ocrMultiResults = document.getElementById('ocr-multi-results');
+
+const ocrMultiNormal = document.getElementById('ocr-multi-normal');
+const ocrMultiSharp = document.getElementById('ocr-multi-sharp');
+const ocrMultiDenoise = document.getElementById('ocr-multi-denoise');
 ocrButton.addEventListener('click', async () => {
   const file = ocrFile.files[0];
 
@@ -1653,6 +1725,190 @@ ocrCompareButton.addEventListener('click', async () => {
 
   } finally {
     ocrCompareButton.disabled = false;
+  }
+});
+// اجرای آزمایش سه روش بهینه‌سازی OCR
+ocrMultiButton.addEventListener('click', async () => {
+  const file = ocrFile.files[0];
+
+  if (!file) {
+    ocrStatus.textContent = 'ابتدا یک عکس یا PDF انتخاب کن.';
+    return;
+  }
+
+  if (
+    !file.type.startsWith('image/') &&
+    file.type !== 'application/pdf'
+  ) {
+    ocrStatus.textContent = 'فرمت فایل پشتیبانی نمی‌شود.';
+    return;
+  }
+
+  if (!window.Tesseract) {
+    ocrStatus.textContent = 'کتابخانه OCR بارگذاری نشده است.';
+    return;
+  }
+
+  if (
+    file.type === 'application/pdf' &&
+    !window.pdfjsLib
+  ) {
+    ocrStatus.textContent = 'کتابخانه PDF بارگذاری نشده است.';
+    return;
+  }
+
+  ocrMultiButton.disabled = true;
+  ocrMultiResults.hidden = false;
+
+  ocrMultiNormal.value = '';
+  ocrMultiSharp.value = '';
+  ocrMultiDenoise.value = '';
+
+  const results = {
+    normal: '',
+    sharp: '',
+    denoise: ''
+  };
+
+  try {
+    if (
+      !ocrWorker ||
+      ocrCurrentLanguage !== ocrLanguage.value
+    ) {
+      if (ocrWorker) {
+        await ocrWorker.terminate();
+        ocrWorker = null;
+      }
+
+      ocrStatus.textContent = 'در حال آماده‌سازی موتور OCR...';
+
+      ocrWorker = await Tesseract.createWorker(
+        ocrLanguage.value,
+        1,
+        {
+          logger: message => {
+            const percent = Math.round(
+              (message.progress || 0) * 100
+            );
+
+            ocrStatus.textContent =
+              `${message.status} - ${percent}٪`;
+          }
+        }
+      );
+
+      ocrCurrentLanguage = ocrLanguage.value;
+    }
+
+    await ocrWorker.setParameters({
+      tessedit_pageseg_mode: '6',
+      preserve_interword_spaces: '1'
+    });
+
+    async function processCanvas(sourceCanvas, pageNumber = null) {
+      const variants = createOCRVariants(sourceCanvas);
+
+      for (const method of ['normal', 'sharp', 'denoise']) {
+        const labels = {
+          normal: 'روش اول: کنتراست معمولی',
+          sharp: 'روش دوم: وضوح بیشتر',
+          denoise: 'روش سوم: کاهش نویز'
+        };
+
+        ocrStatus.textContent =
+          `${labels[method]}${pageNumber ? ` - صفحه ${pageNumber}` : ''}`;
+
+        const result = await ocrWorker.recognize(
+          variants[method]
+        );
+
+        results[method] +=
+          (pageNumber ? `\n\n--- صفحه ${pageNumber} ---\n\n` : '') +
+          result.data.text.trim();
+
+        variants[method].width = 0;
+        variants[method].height = 0;
+      }
+    }
+
+    if (file.type === 'application/pdf') {
+      const pdfData = await file.arrayBuffer();
+
+      const pdf = await pdfjsLib.getDocument({
+        data: pdfData
+      }).promise;
+
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+
+      for (
+        let pageNumber = 1;
+        pageNumber <= pdf.numPages;
+        pageNumber++
+      ) {
+        const page = await pdf.getPage(pageNumber);
+
+        const viewport = page.getViewport({
+          scale: 2
+        });
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        await page.render({
+          canvasContext: context,
+          viewport: viewport
+        }).promise;
+
+        await processCanvas(canvas, pageNumber);
+      }
+
+      canvas.width = 0;
+      canvas.height = 0;
+
+    } else {
+      const image = await createImageBitmap(file);
+
+      try {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+
+        canvas.width = image.width;
+        canvas.height = image.height;
+
+        context.drawImage(
+          image,
+          0,
+          0,
+          image.width,
+          image.height
+        );
+
+        await processCanvas(canvas);
+
+        canvas.width = 0;
+        canvas.height = 0;
+
+      } finally {
+        image.close();
+      }
+    }
+
+    ocrMultiNormal.value = results.normal;
+    ocrMultiSharp.value = results.sharp;
+    ocrMultiDenoise.value = results.denoise;
+
+    ocrStatus.textContent =
+      'آزمایش سه روش با موفقیت انجام شد.';
+
+  } catch (error) {
+    console.error('OCR Multi Error:', error);
+
+    ocrStatus.textContent =
+      'پردازش سه روش ناموفق بود. دوباره تلاش کن.';
+
+  } finally {
+    ocrMultiButton.disabled = false;
   }
 });
 ocrCopy.addEventListener('click', async () => {
