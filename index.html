@@ -1379,7 +1379,21 @@ function createOCRVariants(sourceCanvas) {
     denoise: makeVariant('grayscale(1) contrast(1.1) blur(0.3px)')
   };
 }
+// پاک‌سازی و اصلاح اولیه متن استخراج‌شده از OCR
+function cleanOCRText(text) {
+  if (!text) return '';
 
+  return text
+    .replace(/ي/g, 'ی')
+    .replace(/ك/g, 'ک')
+    .split('\n')
+    .map(line => line.trim())
+    .map(line => line.replace(/\s+([،؛؟!,.])/g, '$1'))
+    .map(line => line.replace(/([،؛؟!,.])(?=\S)/g, '$1 '))
+    .map(line => line.replace(/[ \t]{2,}/g, ' '))
+    .join('\n')
+    .trim();
+}
 // ابزار تبدیل عکس به متن OCR
 const ocrFile = document.getElementById('ocr-file');
 const ocrButton = document.getElementById('ocr-button');
