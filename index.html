@@ -1422,6 +1422,12 @@ function cleanOCRText(text) {
     .map(line => line.replace(/([،؛؟!,.])(?=\S)/g, '$1 '))
     .map(line => line.replace(/[ \t]{2,}/g, ' '))
     .join('\n');
+  // افزودن فاصله بین عدد و کلمه
+result = result.replace(/([۰-۹])(?=[آ-ی])/g, '$1 ');
+result = result.replace(/([آ-ی])(?=[۰-۹])/g, '$1 ');
+
+// حذف فاصله‌های اضافی
+result = result.replace(/[ \t]{2,}/g, ' ');
 
   return result.trim();
 }
