@@ -1383,16 +1383,47 @@ function createOCRVariants(sourceCanvas) {
 function cleanOCRText(text) {
   if (!text) return '';
 
-  return text
+  let result = text
     .replace(/ي/g, 'ی')
-    .replace(/ك/g, 'ک')
+    .replace(/ك/g, 'ک');
+
+  // تبدیل اعداد انگلیسی و عربی به فارسی
+  const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
+
+  result = result.replace(/[0-9٠-٩]/g, digit => {
+    const number = digit >= '٠' && digit <= '٩'
+      ? digit.charCodeAt(0) - 1632
+      : Number(digit);
+
+    return persianDigits[number];
+  });
+
+  // اصلاح چند خطای پرتکرار و مشخص OCR
+  const corrections = {
+    'دفترجه': 'دفترچه',
+    'ذبل': 'ذیل',
+    'پابان': 'پایان',
+    'آزمونورودی': 'آزمون ورودی',
+    'بهتاریخ': 'به تاریخ',
+    'اقدامکنند': 'اقدام کنند',
+    'راهنمایفوق': 'راهنمای فوق',
+    'می‌رساندبه‌منظور': 'می‌رساند به‌منظور'
+  };
+
+  for (const wrong in corrections) {
+    result = result.split(wrong).join(corrections[wrong]);
+  }
+
+  // مرتب‌سازی فاصله‌ها و علائم نگارشی
+  result = result
     .split('\n')
     .map(line => line.trim())
     .map(line => line.replace(/\s+([،؛؟!,.])/g, '$1'))
     .map(line => line.replace(/([،؛؟!,.])(?=\S)/g, '$1 '))
     .map(line => line.replace(/[ \t]{2,}/g, ' '))
-    .join('\n')
-    .trim();
+    .join('\n');
+
+  return result.trim();
 }
 // ابزار تبدیل عکس به متن OCR
 const ocrFile = document.getElementById('ocr-file');
