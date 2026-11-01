@@ -1415,6 +1415,11 @@ function cleanOCRText(text) {
   }
 
   // مرتب‌سازی فاصله‌ها و علائم نگارشی
+  // یکسان‌سازی علائم نگارشی فارسی
+result = result
+  .replace(/,/g, '،')
+  .replace(/;/g, '؛')
+  .replace(/\?/g, '؟');
   result = result
     .split('\n')
     .map(line => line.trim())
