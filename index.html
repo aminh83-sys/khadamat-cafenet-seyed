@@ -1277,49 +1277,9 @@ removeBgDownload.addEventListener('click', () => {
 
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
-    // بهینه‌سازی تصویر برای افزایش دقت OCR
-// بهینه‌سازی تصویر برای تشخیص بهتر متن فارسی و انگلیسی
-function improveOCRImage(sourceCanvas, mode = 'printed') {  
-  // ساخت سه نسخه بهینه‌شده برای مقایسه OCR
-function createOCRVariants(sourceCanvas) {
 
-  function makeVariant(filter) {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d', {
-      willReadFrequently: true
-    });
-
-    const scale = 2.5;
-
-    canvas.width = Math.round(sourceCanvas.width * scale);
-    canvas.height = Math.round(sourceCanvas.height * scale);
-
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-
-    ctx.filter = filter;
-
-    ctx.drawImage(
-      sourceCanvas,
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
-
-    ctx.filter = 'none';
-
-    return canvas;
-  }
-
-  return {
-    normal: makeVariant('grayscale(1) contrast(1.15)'),
-
-    sharp: makeVariant('grayscale(1) contrast(1.4)'),
-
-    denoise: makeVariant('grayscale(1) contrast(1.1) blur(0.3px)')
-  };
-}
+// بهینه‌سازی تصویر برای افزایش دقت OCR
+function improveOCRImage(sourceCanvas, mode = 'printed') {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d', {
     willReadFrequently: true
@@ -1333,30 +1293,30 @@ function createOCRVariants(sourceCanvas) {
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-let contrast = 1.25;
+  let contrast = 1.25;
 
-if (mode === 'printed') {
-  contrast = 1.20;
-} else if (mode === 'form') {
-  contrast = 1.40;
-} else if (mode === 'mixed') {
-  contrast = 1.15;
-}
+  if (mode === 'printed') {
+    contrast = 1.20;
+  } else if (mode === 'form') {
+    contrast = 1.40;
+  } else if (mode === 'mixed') {
+    contrast = 1.15;
+  }
 
-ctx.filter = `grayscale(1) contrast(${contrast})`;  ctx.drawImage(
+  ctx.filter = `grayscale(1) contrast(${contrast})`;
+
+  ctx.drawImage(
     sourceCanvas,
     0,
     0,
     canvas.width,
     canvas.height
   );
+
   ctx.filter = 'none';
 
   const imageData = ctx.getImageData(
-    0,
-    0,
-    canvas.width,
-    canvas.height
+    0, 0, canvas.width, canvas.height
   );
 
   const pixels = imageData.data;
@@ -1378,6 +1338,47 @@ ctx.filter = `grayscale(1) contrast(${contrast})`;  ctx.drawImage(
 
   return canvas;
 }
+
+
+// ساخت سه نسخه بهینه‌شده برای مقایسه OCR
+function createOCRVariants(sourceCanvas) {
+
+  function makeVariant(filter) {
+    const canvas = document.createElement('canvas');
+
+    const ctx = canvas.getContext('2d', {
+      willReadFrequently: true
+    });
+
+    const scale = 2.5;
+
+    canvas.width = Math.round(sourceCanvas.width * scale);
+    canvas.height = Math.round(sourceCanvas.height * scale);
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.filter = filter;
+
+    ctx.drawImage(
+      sourceCanvas,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    ctx.filter = 'none';
+
+    return canvas;
+  }
+
+  return {
+    normal: makeVariant('grayscale(1) contrast(1.15)'),
+    sharp: makeVariant('grayscale(1) contrast(1.4)'),
+    denoise: makeVariant('grayscale(1) contrast(1.1) blur(0.3px)')
+  };
+}
+
 // ابزار تبدیل عکس به متن OCR
 const ocrFile = document.getElementById('ocr-file');
 const ocrButton = document.getElementById('ocr-button');
