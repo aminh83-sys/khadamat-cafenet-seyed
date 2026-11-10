@@ -1798,6 +1798,10 @@ const pageResult = await ocrWorker.recognize(improvedCanvas);
     extractedText +=
       `\n\n--- صفحه ${pageNumber} ---\n\n` +
       pageResult.data.text.trim();
+        improvedCanvas.width = 0;
+    improvedCanvas.height = 0;
+
+    page.cleanup();
   }
 
   pdfCanvas.width = 0;
